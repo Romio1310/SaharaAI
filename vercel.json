@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "sahara-wellness-ai",
+  "name": "sahara-wellness-romio-2024",
   "builds": [
     {
       "src": "api/index.py",
