@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang        .professional-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -2;
+            background: 
+                radial-gradient(ellipse at top, #064e3b 0%, #0f172a 50%, #000000 100%),
+                linear-gradient(135deg, #4ade80 0%, #06b6d4 50%, #059669 100%);
+            background-size: 100% 100%, 300% 300%;
+            animation: professionalFlow 30s ease-in-out infinite;
+        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahara - AI Mental Wellness for Indian Youth</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            padding-top: 80px; /* Account for fixed navbar */
+        }
+        
+        /* Therapeutic Animated Background */
+        .professional-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at top, #5A7C65 0%, #3A4A3C 50%, #2D3E2F 100%),
+                linear-gradient(135deg, #7C9885 0%, #7C9885 50%, #A8C69F 100%);
+            background-size: 100% 100%, 200% 200%;
+            animation: professionalFlow 30s ease-in-out infinite;
+        }
+        
+        .professional-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(124, 152, 133, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(107, 155, 209, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(168, 198, 159, 0.15) 0%, transparent 50%);
+            animation: orbitingLights 30s linear infinite;
+            filter: blur(50px);
+        }
+        
+        .professional-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%),
+                linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%);
+            background-size: 100px 100px;
+            animation: gridFlow 15s linear infinite;
+            opacity: 0.4;
+        }
+        
+        /* Floating Particles */
+        .particles-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, rgba(247, 246, 244, 0.15), transparent),
+                radial-gradient(1px 1px at 40px 70px, rgba(124, 152, 133, 0.4), transparent),
+                radial-gradient(2px 2px at 90px 40px, rgba(107, 155, 209, 0.3), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(212, 165, 116, 0.1), transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(168, 198, 159, 0.2), transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: particlesFloat 40s linear infinite;
+            pointer-events: none;
+        }
+        
+        /* Neural Network Pattern */
+        .neural-network {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(45deg, transparent 40%, rgba(124, 152, 133, 0.1) 49%, rgba(124, 152, 133, 0.1) 51%, transparent 60%),
+                linear-gradient(-45deg, transparent 40%, rgba(107, 155, 209, 0.1) 49%, rgba(107, 155, 209, 0.1) 51%, transparent 60%);
+            background-size: 60px 60px, 80px 80px;
+            animation: neuralPulse 8s ease-in-out infinite;
+            opacity: 0.6;
+        }
+        
+        /* Fixed Navigation Styles */
+        .navbar {
+            backdrop-filter: blur(10px);
+            background: rgba(45, 62, 47, 0.9);
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(124, 152, 133, 0.2);
+        }
+        
+        .navbar:hover {
+            background: rgba(45, 62, 47, 0.95);
+        }
+        
+        @keyframes professionalFlow {
+            0%, 100% { 
+                background-position: 0% 0%, 0% 0%;
+                /* Removed hue-rotate to prevent color shifting */
+            }
+            25% { 
+                background-position: 0% 0%, 25% 25%;
+            }
+            50% { 
+                background-position: 0% 0%, 50% 50%;
+            }
+            75% { 
+                background-position: 0% 0%, 75% 25%;
+            }
+        }
+        
+        @keyframes orbitingLights {
+            0% { 
+                transform: rotate(0deg) scale(1);
+                opacity: 0.8;
+            }
+            25% { 
+                transform: rotate(90deg) scale(1.1);
+                opacity: 1;
+            }
+            50% { 
+                transform: rotate(180deg) scale(0.9);
+                opacity: 0.7;
+            }
+            75% { 
+                transform: rotate(270deg) scale(1.05);
+                opacity: 0.9;
+            }
+            100% { 
+                transform: rotate(360deg) scale(1);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes gridFlow {
+            0% { 
+                transform: translate(0, 0);
+            }
+            100% { 
+                transform: translate(-100px, -100px);
+            }
+        }
+        
+        @keyframes particlesFloat {
+            0% { 
+                transform: translateY(0px) translateX(0px);
+            }
+            100% { 
+                transform: translateY(-100px) translateX(-200px);
+            }
+        }
+        
+        @keyframes neuralPulse {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+        
+        .gradient-bg {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(25px) saturate(180%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+        
+        .floating-animation {
+            animation: elegantFloat 8s ease-in-out infinite;
+        }
+        
+        @keyframes elegantFloat {
+            0%, 100% { 
+                transform: translateY(0px) scale(1);
+                filter: blur(0px);
+            }
+            50% { 
+                transform: translateY(-15px) scale(1.02);
+                filter: blur(0.5px);
+            }
+        }
+        
+        .pulse-dot {
+            animation: sophisticatedPulse 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            transform: translate(-50%, -50%);
+            animation: rippleEffect 3s ease-out infinite;
+            opacity: 0.5;
+        }
+        
+        @keyframes sophisticatedPulse {
+            0%, 100% { 
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+        
+        @keyframes rippleEffect {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0;
+            }
+        }
+        
+        .navbar {
+            backdrop-filter: blur(25px) saturate(180%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .navbar.scrolled {
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(30, 27, 75, 0.9) 100%);
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px) saturate(180%);
+        }
+        
+        /* Creative Theme Toggle */
+        .creative-theme-toggle {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .creative-theme-toggle:hover {
+            transform: scale(1.05);
+        }
+        
+        .toggle-container {
+            position: relative;
+            width: 64px;
+            height: 32px;
+        }
+        
+        .toggle-background {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 2px 10px rgba(124, 152, 133, 0.3);
+        }
+        
+        .sun-moon-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            z-index: 1;
+        }
+        
+        .sun-icon, .moon-icon {
+            font-size: 12px;
+            color: white;
+            transition: all 0.4s ease;
+            opacity: 0.7;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        
+        .toggle-slider::after {
+            content: '☀️';
+            font-size: 14px;
+            transition: all 0.4s ease;
+        }
+        
+        /* Dark theme state */
+        .dark .toggle-background {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            box-shadow: 0 2px 10px rgba(30, 41, 59, 0.5);
+        }
+        
+        .dark .toggle-slider {
+            transform: translateX(32px);
+            background: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark .toggle-slider::after {
+            content: '🌙';
+        }
+        
+        .dark .sun-icon {
+            opacity: 0.3;
+        }
+        
+        .dark .moon-icon {
+            opacity: 1;
+        }
+        
+        /* Light theme background */
+        .light .professional-bg {
+            background: 
+                radial-gradient(ellipse at top, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%),
+                linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        
+        .light .professional-bg::before {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(240, 147, 251, 0.1) 0%, transparent 50%);
+        }
+        
+        .light .navbar {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.8) 100%);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .light .navbar.scrolled {
+            background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(226, 232, 240, 0.9) 100%);
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .light h1, .light h2, .light h3, .light h4, .light p, .light a {
+            color: #1e293b !important;
+        }
+        
+        .light .text-white {
+            color: #1e293b !important;
+        }
+        
+        .light .text-white\/80 {
+            color: rgba(30, 41, 59, 0.8) !important;
+        }
+        
+        .light .text-white\/90 {
+            color: rgba(30, 41, 59, 0.9) !important;
+        }
+        
+        .light .text-white\/70 {
+            color: rgba(30, 41, 59, 0.7) !important;
+        }
+        
+        .light .text-white\/60 {
+            color: rgba(30, 41, 59, 0.6) !important;
+        }
+        
+        .light .text-white\/50 {
+            color: rgba(30, 41, 59, 0.5) !important;
+        }
+        
+        .light .glass-effect {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 100%);
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        
+        .light .feature-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .light .feature-card:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Theme transition */
+        * {
+            transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+        }
+    </style>
+</head>
+
+<body x-data="authApp()">
+    <!-- Professional Animated Background -->
+    <div class="professional-bg">
+        <div class="particles-layer"></div>
+        <div class="neural-network"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-white">Sahara</h1>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#features" class="text-white/80 hover:text-white transition-colors">Features</a>
+                    <a href="#about" class="text-white/80 hover:text-white transition-colors">About</a>
+                    <a href="#support" class="text-white/80 hover:text-white transition-colors">Support</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Creative Theme Toggle -->
+                    <div class="creative-theme-toggle" id="theme-toggle">
+                        <div class="toggle-container">
+                            <div class="toggle-background">
+                                <div class="sun-moon-container">
+                                    <i class="fas fa-sun sun-icon"></i>
+                                    <i class="fas fa-moon moon-icon"></i>
+                                </div>
+                                <div class="toggle-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Authentication Component -->
+                    <div class="relative">
+                        <!-- Signed Out State -->
+                        <div x-show="!isAuthenticated" class="flex items-center space-x-3">
+                            <a href="/login" class="px-4 py-2 text-white/90 hover:text-white transition-colors">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                            </a>
+                        </div>
+                        
+                        <!-- Signed In State -->
+                        <div x-show="isAuthenticated" class="relative">
+                            <button @click="dropdownOpen = !dropdownOpen" 
+                                    class="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-[#7C9885]/20 to-[#5A7C65]/20 rounded-lg hover:from-[#7C9885]/30 hover:to-[#5A7C65]/30 transition-all duration-200 border border-[#7C9885]/30 backdrop-blur-sm">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#7C9885] to-[#5A7C65] rounded-full flex items-center justify-center ring-2 ring-white/20">
+                                    <span class="text-white font-medium text-sm" x-text="username ? username.charAt(0).toUpperCase() : 'U'"></span>
+                                </div>
+                                <span class="text-white font-medium" x-text="username || 'User'"></span>
+                                <i class="fas fa-chevron-down text-white/70 transition-transform duration-200" 
+                                   :class="dropdownOpen ? 'rotate-180' : ''"></i>
+                            </button>
+                            
+                            <!-- User Dropdown Menu -->
+                            <div x-show="dropdownOpen" 
+                                 @click.outside="dropdownOpen = false"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform scale-95"
+                                 x-transition:enter-end="opacity-100 transform scale-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 transform scale-100"
+                                 x-transition:leave-end="opacity-0 transform scale-95"
+                                 class="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 py-2 z-[1100]">
+                                
+                                <!-- User Info Header -->
+                                <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-[#7C9885] to-[#5A7C65] rounded-full flex items-center justify-center ring-2 ring-white ring-opacity-20">
+                                            <span class="text-white font-bold" x-text="username ? username.charAt(0).toUpperCase() : 'U'"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900 dark:text-white" x-text="username || 'User'"></p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Welcome back!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Menu Items -->
+                                <div class="py-2">
+                                    <a href="/mood-analytics" 
+                                       class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-[#7C9885] hover:from-10% hover:to-transparent hover:text-white transition-all duration-200">
+                                        <i class="fas fa-chart-line mr-3 text-[#7C9885]"></i>
+                                        <span>Mood Analytics</span>
+                                    </a>
+                                    <a href="/chat" 
+                                       class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-[#6B9BD1] hover:from-10% hover:to-transparent hover:text-white transition-all duration-200">
+                                        <i class="fas fa-comments mr-3 text-[#6B9BD1]"></i>
+                                        <span>Chat Interface</span>
+                                    </a>
+                                    <hr class="my-2 border-gray-200 dark:border-gray-700">
+                                    <button @click="logout()" 
+                                            class="flex items-center w-full px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                                        <i class="fas fa-sign-out-alt mr-3"></i>
+                                        <span>Sign Out</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-4 pt-20">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Main Heading -->
+                        <!-- Main Heading -->
+            <div class="mb-8 floating-animation">
+                <h1 class="text-6xl md:text-8xl font-bold text-white mb-4">
+                    Sahara
+                </h1>
+                <h2 class="text-xl md:text-2xl text-white/90 font-medium mb-6">
+                    Make your mental health journey alive.
+                </h2>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-8 space-y-4">
+                <p class="text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
+                    Sahara is a new AI-powered platform to create beautiful, supportive mental wellness experiences.
+                </p>
+                <p class="text-base md:text-lg text-white/70 max-w-xl mx-auto">
+                    Available for Indian youth seeking culturally-aware mental health support.
+                </p>
+                <p class="text-sm md:text-base text-white/60">
+                    Start healing from your favorite place
+                </p>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="mb-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="/chat" class="btn-primary px-8 py-4 rounded-full text-white font-semibold text-lg inline-flex items-center gap-2 shadow-lg">
+                    Chat with AI <i class="fas fa-comments"></i>
+                </a>
+                <a href="/mood-analytics" class="btn-secondary px-8 py-4 rounded-full text-white font-medium text-lg inline-flex items-center gap-2 border border-white/30">
+                    Mood Analytics <i class="fas fa-chart-line"></i>
+                </a>
+            </div>
+
+            <!-- Floating Dots -->
+            <div class="flex justify-center space-x-3 mb-12">
+                <div class="w-3 h-3 rounded-full bg-white/40 pulse-dot"></div>
+                <div class="w-3 h-3 rounded-full bg-white/60 pulse-dot" style="animation-delay: 0.5s;"></div>
+                <div class="w-3 h-3 rounded-full bg-white/40 pulse-dot" style="animation-delay: 1s;"></div>
+                <div class="w-3 h-3 rounded-full bg-white/20 pulse-dot" style="animation-delay: 1.5s;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Sahara?</h3>
+                <p class="text-white/70 text-lg max-w-2xl mx-auto">
+                    Culturally-sensitive AI support designed specifically for Indian youth mental wellness
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- AI Counselor -->
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-robot text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-white font-semibold text-lg mb-3">AI Counselor</h4>
+                    <p class="text-white/70 text-sm">
+                        24/7 culturally-aware AI that understands Indian family dynamics and academic pressures
+                    </p>
+                </div>
+
+                <!-- Mood Tracking -->
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-white font-semibold text-lg mb-3">Mood Tracking</h4>
+                    <p class="text-white/70 text-sm">
+                        Visual mood patterns and insights to understand your mental wellness journey
+                    </p>
+                </div>
+
+                <!-- Community Support -->
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-white font-semibold text-lg mb-3">Community Support</h4>
+                    <p class="text-white/70 text-sm">
+                        Anonymous peer support from others who understand your cultural context
+                    </p>
+                </div>
+
+                <!-- 100% Private -->
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-white text-2xl"></i>
+                    </div>
+                    <h4 class="text-white font-semibold text-lg mb-3">100% Private</h4>
+                    <p class="text-white/70 text-sm">
+                        Completely anonymous and confidential - no stigma, no judgment, just support
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="glass-effect rounded-3xl p-8 md:p-12">
+                <h3 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                    Breaking Mental Health Stigma in India
+                </h3>
+                <p class="text-white/80 text-lg md:text-xl leading-relaxed mb-8">
+                    We understand the unique challenges Indian youth face - from intense academic pressure 
+                    to family expectations, from "log kya kahenge" to finding your own path. 
+                    Sahara provides a safe, anonymous space where you can be yourself without judgment.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white">24/7</div>
+                        <div class="text-white/70 text-sm">Always Available</div>
+                    </div>
+                    <div class="hidden sm:block w-px bg-white/30 mx-8"></div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white">100%</div>
+                        <div class="text-white/70 text-sm">Anonymous & Private</div>
+                    </div>
+                    <div class="hidden sm:block w-px bg-white/30 mx-8"></div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-white">AI</div>
+                        <div class="text-white/70 text-sm">Culturally Aware</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <h3 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                Ready to Start Your Wellness Journey?
+            </h3>
+            <p class="text-white/80 text-lg mb-8">
+                Join thousands of Indian youth who are prioritizing their mental health with Sahara
+            </p>
+            <a href="/chat" class="btn-primary px-10 py-5 rounded-full text-white font-semibold text-xl inline-flex items-center gap-3 shadow-lg">
+                <i class="fas fa-comments"></i>
+                Start Chatting with Sahara
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t border-white/20">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center">
+                <h4 class="text-2xl font-bold text-white mb-4">Sahara</h4>
+                <p class="text-white/60 mb-6">AI-powered mental wellness for Indian youth</p>
+                <div class="flex justify-center space-x-6 text-white/70">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition-colors">Crisis Support</a>
+                    <a href="#" class="hover:text-white transition-colors">Contact Us</a>
+                </div>
+                <div class="mt-8 pt-8 border-t border-white/20">
+                    <p class="text-white/50 text-sm">
+                        © 2025 Sahara - Built for GenAI Exchange Hackathon. 
+                        <span class="block mt-2">
+                            <i class="fas fa-heart text-red-400"></i> If you're in crisis, please reach out to a mental health professional immediately.
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Alpine.js Authentication App
+        function authApp() {
+            return {
+                isAuthenticated: {% if current_user.is_authenticated %}true{% else %}false{% endif %},
+                username: {% if current_user.is_authenticated %}'{{ current_user.username }}'{% else %}null{% endif %},
+                dropdownOpen: false,
+                
+                async logout() {
+                    try {
+                        const response = await fetch('/logout', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            // Update authentication state
+                            this.isAuthenticated = false;
+                            this.username = null;
+                            this.dropdownOpen = false;
+                            
+                            // Show success message briefly
+                            const notification = document.createElement('div');
+                            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                            notification.textContent = 'Successfully signed out';
+                            document.body.appendChild(notification);
+                            
+                            setTimeout(() => {
+                                notification.remove();
+                            }, 3000);
+                        } else {
+                            console.error('Logout failed');
+                        }
+                    } catch (error) {
+                        console.error('Error during logout:', error);
+                    }
+                }
+            }
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Professional navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Add parallax effect to background layers
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.particles-layer, .neural-network');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = 0.5 + (index * 0.2);
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Theme Management
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or default to 'dark'
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        body.classList.add(savedTheme);
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', function() {
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                body.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light');
+                body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            
+            // Add a subtle animation to the page
+            body.style.transform = 'scale(0.99)';
+            setTimeout(() => {
+                body.style.transform = 'scale(1)';
+            }, 200);
+        });
+
+        // Add entrance animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Enhanced page load animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate feature cards
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+            
+            // Animate main heading
+            const heading = document.querySelector('.floating-animation');
+            if (heading) {
+                heading.style.opacity = '0';
+                heading.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    heading.style.opacity = '1';
+                    heading.style.transform = 'translateY(0)';
+                }, 300);
+            }
+            
+            // Animate CTA buttons
+            const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+            buttons.forEach((button, index) => {
+                button.style.opacity = '0';
+                button.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    button.style.opacity = '1';
+                    button.style.transform = 'translateY(0)';
+                }, 600 + (index * 200));
+            });
+        });
+    </script>
+</body>
+</html>

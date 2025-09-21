@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en" x-data="moodCheckin()" :class="{'dark': darkMode}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Check-in - Sahara AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Professional Glass Effect */
+        .glass-effect {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 25px 45px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 
+                0 15px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        /* Light Mode Glass Effect */
+        .light .glass-effect {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 100%);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 
+                0 25px 45px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        
+        .light .glass-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 
+                0 15px 25px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+
+        /* Perfect Mood Bubble Styling */
+        .mood-bubble {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mood-bubble:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(124, 152, 133, 0.6);
+            background: linear-gradient(135deg, rgba(124, 152, 133, 0.3) 0%, rgba(107, 155, 209, 0.3) 100%);
+        }
+        
+        .mood-bubble.selected {
+            background: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%);
+            color: white;
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: 0 12px 35px rgba(124, 152, 133, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Light Mode Mood Bubbles */
+        .light .mood-bubble {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            color: #1e293b;
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .light .mood-bubble:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.8) 100%);
+            border-color: rgba(102, 126, 234, 0.4);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .light .mood-bubble.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Intensity Slider */
+        .intensity-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #10b981 0%, #84cc16 25%, #eab308 50%, #f59e0b 75%, #ef4444 100%);
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .intensity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 3px solid #667eea;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .intensity-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        /* Button Styling - Landing Page Colors */
+        .btn-primary {
+            background: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(124, 152, 133, 0.4);
+        }
+        
+        .light .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .light .btn-primary:hover {
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Animations - Landing Page Match */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes floatingGentle {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .floating-animation {
+            animation: floatingGentle 4s ease-in-out infinite;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Landing Page Background Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            background: #0a0a0a;
+        }
+        
+        /* Therapeutic Animated Background */
+        .professional-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at top, #5A7C65 0%, #3A4A3C 50%, #2D3E2F 100%),
+                linear-gradient(135deg, #7C9885 0%, #7C9885 50%, #A8C69F 100%);
+            background-size: 100% 100%, 200% 200%;
+            animation: professionalFlow 30s ease-in-out infinite;
+        }
+        
+        .professional-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(124, 152, 133, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(107, 155, 209, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(168, 198, 159, 0.15) 0%, transparent 50%);
+            animation: orbitingLights 30s linear infinite;
+            filter: blur(50px);
+        }
+        
+        .professional-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%),
+                linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%);
+            background-size: 100px 100px;
+            animation: gridFlow 15s linear infinite;
+            opacity: 0.4;
+        }
+        
+        /* Floating Particles */
+        .particles-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, rgba(247, 246, 244, 0.15), transparent),
+                radial-gradient(1px 1px at 40px 70px, rgba(124, 152, 133, 0.4), transparent),
+                radial-gradient(2px 2px at 90px 40px, rgba(107, 155, 209, 0.3), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(212, 165, 116, 0.1), transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(168, 198, 159, 0.2), transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: particlesFloat 40s linear infinite;
+            pointer-events: none;
+        }
+
+        /* Background Animations */
+        @keyframes professionalFlow {
+            0%, 100% { background-position: 0% 50%, 0% 50%; }
+            50% { background-position: 100% 50%, 100% 50%; }
+        }
+        
+        @keyframes orbitingLights {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes gridFlow {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100px, 100px); }
+        }
+        
+        @keyframes particlesFloat {
+            0% { transform: translate(0px, 0px); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+            100% { transform: translate(0px, 0px); }
+        }
+
+        /* Landing Page Toggle Design */
+        .theme-toggle {
+            position: relative;
+            width: 64px;
+            height: 32px;
+        }
+        
+        .toggle-background {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 2px 10px rgba(124, 152, 133, 0.3);
+        }
+        
+        .sun-moon-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            z-index: 1;
+        }
+        
+        .sun-icon, .moon-icon {
+            font-size: 12px;
+            color: white;
+            transition: all 0.4s ease;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        
+        .toggle-slider::after {
+            content: '☀️';
+            font-size: 14px;
+            transition: all 0.4s ease;
+        }
+
+        /* Dark theme state */
+        .dark .toggle-background {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            box-shadow: 0 2px 10px rgba(30, 41, 59, 0.5);
+        }
+        
+        .dark .toggle-slider {
+            transform: translateX(32px);
+            background: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark .toggle-slider::after {
+            content: '🌙';
+        }
+        
+        .dark .sun-icon {
+            opacity: 0.3;
+        }
+        
+        .dark .moon-icon {
+            opacity: 1;
+        }
+
+        /* Light theme background */
+        .light .professional-bg {
+            background: 
+                radial-gradient(ellipse at top, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%),
+                linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        
+        .light .professional-bg::before {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+        }
+
+        /* Enhanced Text Contrast - Professional */
+        .text-enhanced {
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .light .text-enhanced {
+            color: #1e293b;
+            text-shadow: none;
+        }
+        
+        .text-enhanced-secondary {
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .light .text-enhanced-secondary {
+            color: #64748b;
+            text-shadow: none;
+        }
+
+        .text-primary {
+            color: #ffffff;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .light .text-primary {
+            color: #1e293b;
+            text-shadow: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen" :class="darkMode ? 'dark' : 'light'">
+    
+    <!-- Professional Therapeutic Background -->
+    <div class="professional-bg">
+        <div class="particles-layer"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="bg-black/20 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-leaf text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white">Sahara AI</h1>
+                        <p class="text-sm text-white/70">Mood Check-in</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/chat" class="text-white/80 hover:text-white flex items-center space-x-2 transition-colors">
+                        <i class="fas fa-comments"></i>
+                        <span>Chat</span>
+                    </a>
+                    <a href="/" class="text-white/80 hover:text-white flex items-center space-x-2 transition-colors">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <!-- Landing Page Style Dark Mode Toggle -->
+                    <div class="theme-toggle" @click="toggleDarkMode()">
+                        <div class="toggle-background">
+                            <div class="sun-moon-container">
+                                <span class="sun-icon">☀️</span>
+                                <span class="moon-icon">🌙</span>
+                            </div>
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mb-6 floating-animation">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">How are you feeling today?</h1>
+                <h2 class="text-lg md:text-xl text-white/90 font-medium">
+                    Understanding your emotions is the first step towards better mental wellness
+                </h2>
+            </div>
+        </div>
+
+        <!-- Mood Selection Card -->
+        <div class="glass-effect rounded-3xl p-8 mb-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">
+                    Select Your Current Emotion
+                </h2>
+                <p class="text-enhanced-secondary text-xl max-w-2xl mx-auto">
+                    Choose the emotion that best represents how you're feeling right now
+                </p>
+            </div>
+
+            <!-- Mood Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-6 mb-8">
+                <template x-for="mood in moodOptions" :key="mood.label">
+                    <div class="mood-bubble rounded-3xl p-7 text-center"
+                         :class="{'selected': selectedMood?.label === mood.label}"
+                         @click="selectMood(mood)">
+                        <div class="text-4xl mb-4" x-text="mood.emoji"></div>
+                        <div class="text-sm font-bold capitalize tracking-wide"
+                             :class="selectedMood?.label === mood.label ? 'text-white' : 'text-white'"
+                             x-text="mood.label"></div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Form Section (appears when mood is selected) -->
+            <div x-show="selectedMood" class="fade-in-up space-y-8">
+                
+                <!-- Intensity Section -->
+                <div class="glass-panel rounded-3xl p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-primary">
+                                How intense is this feeling?
+                            </h3>
+                            <p class="text-enhanced-secondary">
+                                Rate from 1 (very mild) to 10 (very intense)
+                            </p>
+                        </div>
+                        <div class="glass-panel px-6 py-3 rounded-2xl">
+                            <span class="text-3xl font-bold text-green-400" x-text="intensity"></span>
+                            <span class="text-lg text-enhanced-secondary">/10</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <input type="range" 
+                               x-model="intensity" 
+                               min="1" 
+                               max="10" 
+                               class="w-full intensity-slider">
+                    </div>
+                    
+                    <div class="flex justify-between text-sm text-enhanced-secondary">
+                        <span>Very Mild</span>
+                        <span>Very Intense</span>
+                    </div>
+                </div>
+
+                <!-- Notes and Submit Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Notes -->
+                    <div class="lg:col-span-2 glass-panel rounded-3xl p-8">
+                        <h3 class="text-xl font-bold text-primary mb-4">
+                            <i class="fas fa-pen mr-3 text-green-400"></i>
+                            Share your thoughts (optional)
+                        </h3>
+                        <textarea x-model="notes" 
+                                  placeholder="What's on your mind today?"
+                                  maxlength="200"
+                                  class="w-full h-28 p-5 border-0 rounded-2xl bg-black/30 backdrop-blur-sm text-white placeholder-white/60 focus:ring-2 focus:ring-green-400 focus:bg-black/40 transition-all resize-none text-base">
+                        </textarea>
+                        <div class="text-xs text-enhanced-secondary mt-2 text-right" x-text="`${notes.length}/200`"></div>
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="glass-panel rounded-3xl p-8 flex flex-col justify-center">
+                        <div class="text-center mb-6">
+                            <i class="fas fa-heart text-4xl text-green-400 mb-3"></i>
+                            <p class="text-lg text-enhanced-secondary">Ready to save?</p>
+                        </div>
+                        <button @click="submitMood()" 
+                                :disabled="!selectedMood || isSubmitting"
+                                class="w-full btn-primary text-white font-bold py-5 px-8 rounded-3xl shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-lg">
+                            <span x-show="!isSubmitting">
+                                <i class="fas fa-save mr-2"></i>
+                                Record My Mood
+                            </span>
+                            <span x-show="isSubmitting">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                Saving...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div x-show="showSuccess" class="glass-effect rounded-2xl p-6 mb-8 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-green-500 dark:bg-green-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-green-800 dark:text-green-200 text-lg">🎉 Mood Successfully Recorded!</h3>
+                    <p class="text-green-700 dark:text-green-300" x-text="insightMessage"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics -->
+        <div x-show="showAnalytics" class="glass-effect rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-primary">Your Wellness Dashboard</h3>
+                    <p class="text-enhanced-secondary text-lg">Track your emotional journey</p>
+                </div>
+                <button @click="showAnalyticsPanel = !showAnalyticsPanel"
+                        class="text-green-400 hover:text-green-300 transition-colors p-2 rounded-full hover:bg-white/10">
+                    <i class="fas fa-chevron-down transition-transform text-xl" 
+                       :class="{'rotate-180': showAnalyticsPanel}"></i>
+                </button>
+            </div>
+            
+            <div x-show="showAnalyticsPanel" class="space-y-6">
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
+                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" x-text="analytics.total_entries || 0"></div>
+                        <div class="text-sm text-blue-700 dark:text-blue-300">Check-ins</div>
+                    </div>
+                    <div class="text-center p-4 bg-green-50 dark:bg-green-900/30 rounded-xl">
+                        <div class="text-2xl font-bold text-green-600 dark:text-green-400" x-text="analytics.average_intensity || 0"></div>
+                        <div class="text-sm text-green-700 dark:text-green-300">Avg Intensity</div>
+                    </div>
+                    <div class="text-center p-4 bg-purple-50 dark:bg-purple-900/30 rounded-xl">
+                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400 capitalize" x-text="analytics.most_common_mood || 'N/A'"></div>
+                        <div class="text-sm text-purple-700 dark:text-purple-300">Top Mood</div>
+                    </div>
+                </div>
+                
+                <!-- Chart -->
+                <div class="bg-white dark:bg-slate-800 rounded-xl p-4">
+                    <canvas id="moodChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function moodCheckin() {
+            return {
+                selectedMood: null,
+                intensity: 5,
+                notes: '',
+                isSubmitting: false,
+                showSuccess: false,
+                showAnalytics: false,
+                showAnalyticsPanel: false,
+                insightMessage: '',
+                analytics: {},
+                recentMoods: [],
+                moodChart: null,
+                darkMode: false,
+                
+                moodOptions: [
+                    { emoji: '😊', label: 'happy' },
+                    { emoji: '😢', label: 'sad' },
+                    { emoji: '😰', label: 'anxious' },
+                    { emoji: '😤', label: 'angry' },
+                    { emoji: '😴', label: 'tired' },
+                    { emoji: '🤩', label: 'excited' },
+                    { emoji: '😐', label: 'neutral' },
+                    { emoji: '😟', label: 'stressed' },
+                    { emoji: '🙏', label: 'grateful' },
+                    { emoji: '😕', label: 'confused' }
+                ],
+
+                init() {
+                    this.loadMoodHistory();
+                    this.initializeDarkMode();
+                },
+
+                initializeDarkMode() {
+                    // Load dark mode preference from localStorage - matching landing page
+                    const savedTheme = localStorage.getItem('sahara_theme');
+                    this.darkMode = savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                },
+
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                    localStorage.setItem('sahara_theme', this.darkMode ? 'dark' : 'light');
+                    
+                    // Update chart colors if chart exists
+                    if (this.moodChart) {
+                        this.updateChartTheme();
+                    }
+                },
+
+                updateChartTheme() {
+                    if (!this.moodChart) return;
+                    
+                    const isDark = this.darkMode;
+                    this.moodChart.options.scales.x.ticks.color = isDark ? '#cbd5e1' : '#64748b';
+                    this.moodChart.options.scales.y.ticks.color = isDark ? '#cbd5e1' : '#64748b';
+                    this.moodChart.options.scales.x.grid.color = isDark ? '#475569' : '#cbd5e1';
+                    this.moodChart.options.scales.y.grid.color = isDark ? '#475569' : '#cbd5e1';
+                    this.moodChart.options.plugins.legend.labels.color = isDark ? '#f8fafc' : '#1e293b';
+                    this.moodChart.update();
+                },
+
+                selectMood(mood) {
+                    this.selectedMood = mood;
+                },
+
+                async submitMood() {
+                    if (!this.selectedMood) return;
+                    
+                    this.isSubmitting = true;
+                    
+                    try {
+                        const response = await fetch('/mood', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                mood_emoji: this.selectedMood.emoji,
+                                mood_label: this.selectedMood.label,
+                                mood_intensity: this.intensity,
+                                notes: this.notes,
+                                session_id: this.getSessionId()
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            this.insightMessage = data.insight;
+                            this.showSuccess = true;
+                            this.resetForm();
+                            this.loadMoodHistory();
+                            
+                            setTimeout(() => {
+                                this.showSuccess = false;
+                            }, 5000);
+                        } else {
+                            alert('Failed to save mood: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Error submitting mood:', error);
+                        alert('Network error. Please try again.');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+
+                resetForm() {
+                    this.selectedMood = null;
+                    this.intensity = 5;
+                    this.notes = '';
+                },
+
+                async loadMoodHistory() {
+                    try {
+                        const sessionId = this.getSessionId();
+                        const response = await fetch(`/mood-history?session_id=${sessionId}`);
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            this.analytics = data.analytics;
+                            this.recentMoods = data.mood_entries.slice(0, 10);
+                            this.showAnalytics = data.mood_entries.length > 0;
+                            
+                            if (this.showAnalytics) {
+                                this.$nextTick(() => {
+                                    this.createMoodChart(data.mood_entries);
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error loading mood history:', error);
+                    }
+                },
+
+                createMoodChart(moodEntries) {
+                    const ctx = document.getElementById('moodChart');
+                    if (!ctx) return;
+                    
+                    if (this.moodChart) {
+                        this.moodChart.destroy();
+                    }
+                    
+                    const last7Days = moodEntries.slice(0, 7).reverse();
+                    const dates = last7Days.map(entry => new Date(entry.timestamp).toLocaleDateString());
+                    const intensities = last7Days.map(entry => entry.mood_intensity);
+                    
+                    const isDark = this.darkMode;
+                    
+                    this.moodChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Mood Intensity',
+                                data: intensities,
+                                borderColor: isDark ? '#7C9885' : '#667eea',
+                                backgroundColor: isDark ? 'rgba(124, 152, 133, 0.1)' : 'rgba(102, 126, 234, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: isDark ? '#f8fafc' : '#1e293b'
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        color: isDark ? '#cbd5e1' : '#64748b'
+                                    },
+                                    grid: {
+                                        color: isDark ? '#475569' : '#cbd5e1'
+                                    }
+                                },
+                                y: {
+                                    min: 1,
+                                    max: 10,
+                                    ticks: {
+                                        stepSize: 1,
+                                        color: isDark ? '#cbd5e1' : '#64748b'
+                                    },
+                                    grid: {
+                                        color: isDark ? '#475569' : '#cbd5e1'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+
+                getSessionId() {
+                    let sessionId = localStorage.getItem('sahara_session_id');
+                    if (!sessionId) {
+                        sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                        localStorage.setItem('sahara_session_id', sessionId);
+                    }
+                    return sessionId;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

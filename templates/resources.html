@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Resources - Sahara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .resource-card {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .category-icon {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+        
+        .crisis-alert {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+    </style>
+</head>
+<body class="min-h-screen" x-data="resourcesPage()">
+    <!-- Header -->
+    <header class="text-center py-8 px-4">
+        <a href="/chat" class="inline-block hover:opacity-80 transition-opacity">
+            <h1 class="text-4xl font-bold text-white mb-2">🌸 Sahara AI - Wellness Resources</h1>
+        </a>
+        <p class="text-xl text-white/80">Everything you need for your mental health journey</p>
+        <div class="mt-4">
+            <a href="/chat" class="inline-flex items-center text-white/70 hover:text-white transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Chat
+            </a>
+        </div>
+    </header>
+
+    <!-- Crisis Support Banner -->
+    <div class="px-4 mb-8">
+        <div class="max-w-4xl mx-auto crisis-alert rounded-xl p-6 text-center">
+            <div class="text-3xl mb-3">🚨</div>
+            <h2 class="text-2xl font-bold text-white mb-2">In Crisis? Get Immediate Help</h2>
+            <p class="text-white/90 mb-4">If you're having thoughts of self-harm or suicide, reach out now</p>
+            <button 
+                @click="showCrisisSupport = true"
+                class="bg-white text-red-600 font-bold px-6 py-3 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+                <i class="fas fa-phone mr-2"></i>
+                Crisis Helplines
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 pb-12">
+        <!-- Loading State -->
+        <div x-show="loading" class="text-center py-12">
+            <div class="text-white text-xl">Loading resources...</div>
+        </div>
+
+        <!-- Resources Grid -->
+        <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <template x-for="category in resourceCategories" :key="category.key">
+                <div class="resource-card rounded-xl p-6">
+                    <div class="category-icon" x-html="category.icon"></div>
+                    <h3 class="text-xl font-bold text-white text-center mb-3" x-text="category.title"></h3>
+                    <p class="text-white/80 text-center mb-4" x-text="category.description"></p>
+                    
+                    <!-- Items List -->
+                    <div class="space-y-3">
+                        <template x-for="item in category.items.slice(0, showAll[category.key] ? category.items.length : 3)" :key="item.name">
+                            <div class="bg-white/10 rounded-lg p-3">
+                                <h4 class="font-semibold text-white" x-text="item.name"></h4>
+                                <p class="text-white/70 text-sm" x-text="item.description"></p>
+                                <div x-show="item.contact" class="mt-2">
+                                    <a :href="'tel:' + item.contact" 
+                                       class="text-yellow-300 hover:text-yellow-200 text-sm font-medium">
+                                        <i class="fas fa-phone mr-1"></i>
+                                        <span x-text="item.contact"></span>
+                                    </a>
+                                </div>
+                                <div x-show="item.hours" class="text-white/60 text-xs mt-1">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    <span x-text="item.hours"></span>
+                                </div>
+                            </div>
+                        </template>
+                        
+                        <!-- Show More/Less Button -->
+                        <div x-show="category.items.length > 3" class="text-center">
+                            <button 
+                                @click="toggleShowAll(category.key)"
+                                class="text-white/70 hover:text-white text-sm underline"
+                                x-text="showAll[category.key] ? 'Show Less' : 'Show More (' + (category.items.length - 3) + ' more)'"
+                            ></button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <!-- Crisis Support Modal -->
+    <div x-show="showCrisisSupport" x-transition.opacity class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="resource-card rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white">🚨 Crisis Support</h2>
+                <button @click="showCrisisSupport = false" class="text-white/70 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <template x-for="helpline in crisisHelplines" :key="helpline.name">
+                    <div class="bg-white/10 rounded-lg p-4">
+                        <h3 class="font-bold text-white text-lg" x-text="helpline.name"></h3>
+                        <p class="text-white/80 mb-2" x-text="helpline.description"></p>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <a :href="'tel:' + helpline.contact" 
+                               class="bg-red-500 hover:bg-red-600 text-white font-bold px-4 py-2 rounded-lg transition-colors inline-flex items-center justify-center">
+                                <i class="fas fa-phone mr-2"></i>
+                                <span x-text="helpline.contact"></span>
+                            </a>
+                            <span class="text-white/60 text-sm" x-text="helpline.hours"></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            
+            <div class="mt-6 p-4 bg-yellow-500/20 rounded-lg">
+                <p class="text-white/90 text-sm">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    If you're in immediate danger, call emergency services (100/101/108) or go to your nearest hospital.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function resourcesPage() {
+            return {
+                loading: true,
+                showCrisisSupport: false,
+                resourceCategories: [],
+                showAll: {},
+                crisisHelplines: [
+                    {
+                        name: "Aasra Suicide Prevention",
+                        contact: "91-9820466726",
+                        hours: "24/7",
+                        description: "Mumbai-based crisis helpline providing emotional support"
+                    },
+                    {
+                        name: "Sneha India",
+                        contact: "91-44-24640050",
+                        hours: "24/7",
+                        description: "Chennai-based emotional support and suicide prevention"
+                    },
+                    {
+                        name: "Vandrevala Foundation",
+                        contact: "1860-2662-345",
+                        hours: "24/7",
+                        description: "Free counseling services across India"
+                    },
+                    {
+                        name: "Tele-MANAS",
+                        contact: "14416",
+                        hours: "24/7",
+                        description: "Government of India's mental health helpline"
+                    },
+                    {
+                        name: "iCall",
+                        contact: "91-9152987821",
+                        hours: "Mon-Sat, 8AM-10PM",
+                        description: "Counseling helpline by TISS Mumbai"
+                    }
+                ],
+
+                async init() {
+                    await this.loadResources();
+                },
+
+                async loadResources() {
+                    try {
+                        const response = await fetch('/resources-data');
+                        const data = await response.json();
+                        
+                        this.resourceCategories = [
+                            {
+                                key: 'breathing_exercises',
+                                title: data.breathing_exercises?.title || 'Breathing Exercises',
+                                description: data.breathing_exercises?.description || 'Techniques to manage stress',
+                                icon: '<i class="fas fa-lung"></i>',
+                                items: data.breathing_exercises?.items || []
+                            },
+                            {
+                                key: 'meditation_guides',
+                                title: data.meditation_guides?.title || 'Meditation Guides',
+                                description: data.meditation_guides?.description || 'Mindfulness practices',
+                                icon: '<i class="fas fa-om"></i>',
+                                items: data.meditation_guides?.items || []
+                            },
+                            {
+                                key: 'family_resources',
+                                title: data.family_resources?.title || 'Family Resources',
+                                description: data.family_resources?.description || 'Support for families',
+                                icon: '<i class="fas fa-users"></i>',
+                                items: data.family_resources?.items || []
+                            },
+                            {
+                                key: 'self_care_tips',
+                                title: data.self_care_tips?.title || 'Self-Care Tips',
+                                description: data.self_care_tips?.description || 'Daily wellness practices',
+                                icon: '<i class="fas fa-heart"></i>',
+                                items: data.self_care_tips?.items || []
+                            },
+                            {
+                                key: 'educational_content',
+                                title: data.educational_content?.title || 'Educational Content',
+                                description: data.educational_content?.description || 'Learn about mental health',
+                                icon: '<i class="fas fa-graduation-cap"></i>',
+                                items: data.educational_content?.items || []
+                            },
+                            {
+                                key: 'professional_help',
+                                title: data.professional_help?.title || 'Professional Help',
+                                description: data.professional_help?.description || 'Find qualified therapists',
+                                icon: '<i class="fas fa-user-md"></i>',
+                                items: data.professional_help?.items || []
+                            }
+                        ];
+
+                        // Initialize showAll state
+                        this.resourceCategories.forEach(category => {
+                            this.showAll[category.key] = false;
+                        });
+                        
+                    } catch (error) {
+                        console.error('Error loading resources:', error);
+                        // Fallback empty categories
+                        this.resourceCategories = [];
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+
+                toggleShowAll(categoryKey) {
+                    this.showAll[categoryKey] = !this.showAll[categoryKey];
+                }
+            }
+        }
+    </script>
+</body>
+</html>

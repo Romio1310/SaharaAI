@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Support - Sahara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .crisis-card {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .crisis-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Header -->
+    <header class="text-center py-8 px-4">
+        <div class="pulse text-6xl mb-4">🚨</div>
+        <a href="/chat" class="inline-block hover:opacity-80 transition-opacity">
+            <h1 class="text-4xl font-bold text-white mb-2">Sahara AI - Crisis Support</h1>
+        </a>
+        <p class="text-xl text-white/90">You're not alone. Help is available right now.</p>
+    </header>
+
+    <!-- Immediate Action -->
+    <div class="max-w-4xl mx-auto px-4 mb-8">
+        <div class="crisis-card rounded-xl p-8 text-center mb-8">
+            <h2 class="text-2xl font-bold text-white mb-4">If you're in immediate danger</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="tel:100" class="bg-white text-red-600 font-bold px-6 py-4 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-phone mr-2"></i>
+                    Police: 100
+                </a>
+                <a href="tel:108" class="bg-white text-red-600 font-bold px-6 py-4 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-ambulance mr-2"></i>
+                    Ambulance: 108
+                </a>
+                <a href="tel:101" class="bg-white text-red-600 font-bold px-6 py-4 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-fire mr-2"></i>
+                    Fire: 101
+                </a>
+            </div>
+        </div>
+
+        <!-- Mental Health Helplines -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="crisis-card rounded-xl p-6">
+                <h3 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-phone text-yellow-300 mr-2"></i>
+                    Tele-MANAS (Government of India)
+                </h3>
+                <p class="text-white/90 mb-4">Free mental health counseling and crisis support</p>
+                <a href="tel:14416" class="bg-yellow-400 text-gray-900 font-bold px-6 py-3 rounded-lg hover:bg-yellow-300 transition-colors inline-block w-full text-center">
+                    Call 14416 (24/7)
+                </a>
+            </div>
+
+            <div class="crisis-card rounded-xl p-6">
+                <h3 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-heart text-pink-300 mr-2"></i>
+                    Aasra Suicide Prevention
+                </h3>
+                <p class="text-white/90 mb-4">Emotional support and suicide prevention</p>
+                <a href="tel:91-9820466726" class="bg-pink-400 text-white font-bold px-6 py-3 rounded-lg hover:bg-pink-300 transition-colors inline-block w-full text-center">
+                    Call 91-9820466726 (24/7)
+                </a>
+            </div>
+
+            <div class="crisis-card rounded-xl p-6">
+                <h3 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-hands-helping text-blue-300 mr-2"></i>
+                    Sneha India
+                </h3>
+                <p class="text-white/90 mb-4">Chennai-based emotional support helpline</p>
+                <a href="tel:91-44-24640050" class="bg-blue-400 text-white font-bold px-6 py-3 rounded-lg hover:bg-blue-300 transition-colors inline-block w-full text-center">
+                    Call 91-44-24640050 (24/7)
+                </a>
+            </div>
+
+            <div class="crisis-card rounded-xl p-6">
+                <h3 class="text-xl font-bold text-white mb-4">
+                    <i class="fas fa-comments text-green-300 mr-2"></i>
+                    Vandrevala Foundation
+                </h3>
+                <p class="text-white/90 mb-4">Free counseling services across India</p>
+                <a href="tel:1860-2662-345" class="bg-green-400 text-white font-bold px-6 py-3 rounded-lg hover:bg-green-300 transition-colors inline-block w-full text-center">
+                    Call 1860-2662-345 (24/7)
+                </a>
+            </div>
+        </div>
+
+        <!-- Additional Resources -->
+        <div class="crisis-card rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4">More Support Options</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">iCall (TISS Mumbai)</h4>
+                    <p class="text-white/80 text-sm mb-2">Professional counseling helpline</p>
+                    <a href="tel:91-9152987821" class="text-yellow-300 hover:text-yellow-200">
+                        <i class="fas fa-phone mr-1"></i>
+                        91-9152987821
+                    </a>
+                    <p class="text-white/60 text-xs">Mon-Sat, 8AM-10PM</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Connecting (Bangalore)</h4>
+                    <p class="text-white/80 text-sm mb-2">Mental health support</p>
+                    <a href="tel:91-9080984984" class="text-yellow-300 hover:text-yellow-200">
+                        <i class="fas fa-phone mr-1"></i>
+                        91-9080984984
+                    </a>
+                    <p class="text-white/60 text-xs">Daily, 12PM-8PM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- What to Expect -->
+        <div class="crisis-card rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-info-circle text-blue-300 mr-2"></i>
+                What to Expect When You Call
+            </h3>
+            <div class="space-y-3 text-white/90">
+                <div class="flex items-start">
+                    <i class="fas fa-check text-green-300 mr-3 mt-1"></i>
+                    <p>A trained counselor will listen to you without judgment</p>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check text-green-300 mr-3 mt-1"></i>
+                    <p>Your conversation is confidential and secure</p>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check text-green-300 mr-3 mt-1"></i>
+                    <p>You can talk about anything that's bothering you</p>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-check text-green-300 mr-3 mt-1"></i>
+                    <p>They'll help you develop coping strategies</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coping Strategies -->
+        <div class="crisis-card rounded-xl p-6 mb-8">
+            <h3 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-leaf text-green-300 mr-2"></i>
+                Immediate Coping Strategies
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Breathing Exercise</h4>
+                    <p class="text-white/80 text-sm">Breathe in for 4, hold for 4, out for 4. Repeat 5 times.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Grounding Technique</h4>
+                    <p class="text-white/80 text-sm">Name 5 things you see, 4 you hear, 3 you feel, 2 you smell, 1 you taste.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Reach Out</h4>
+                    <p class="text-white/80 text-sm">Call a trusted friend, family member, or counselor.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-2">Safe Space</h4>
+                    <p class="text-white/80 text-sm">Go to a place where you feel secure and comfortable.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="text-center">
+            <a href="/chat" class="inline-flex items-center text-white/70 hover:text-white transition-colors text-lg">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Safe Chat
+            </a>
+        </div>
+    </div>
+</body>
+</html>

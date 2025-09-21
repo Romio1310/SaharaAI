@@ -1,0 +1,333 @@
+/* Sahara Mental Wellness - Custom Styles */
+
+:root {
+    /* Therapeutic Color Palette for Mental Wellness */
+    --primary-color: #7C9885;        /* Sage Green - trust, growth, harmony */
+    --primary-light: #A8C69F;
+    --primary-dark: #5A7C65;
+    --secondary-color: #6B9BD1;      /* Soft Blue - calm, peace, stability */
+    --secondary-light: #9BB8E0;
+    --secondary-dark: #4A7BA7;
+    --accent-color: #D4A574;         /* Warm Terracotta - grounding, comfort */
+    --accent-light: #E6C49A;
+    --accent-dark: #B8935F;
+    --success-color: #7C9885;        /* Using our sage green for success */
+    --warning-color: #D4A574;        /* Using our warm terracotta for warnings */
+    --danger-color: #B8935F;         /* Muted danger color */
+    --info-color: #6B9BD1;           /* Using our soft blue for info */
+    --light-color: #F7F6F4;          /* Warm off-white background */
+    --dark-color: #2D3E2F;           /* Deep forest green for text */
+    --text-secondary: #5A6B5C;       /* Medium green-gray for secondary text */
+    --gradient-bg: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* Hero Section */
+.hero-section {
+    background: var(--gradient-bg);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.bg-gradient-primary {
+    background: var(--gradient-bg) !important;
+}
+
+/* Chat Messages */
+.chat-messages {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.message {
+    margin-bottom: 15px;
+    animation: fadeInUp 0.3s ease;
+}
+
+.bot-message .message-content {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 18px 18px 18px 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 80%;
+    display: inline-block;
+}
+
+.user-message {
+    text-align: right;
+}
+
+.user-message .message-content {
+    background: var(--primary-color);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 80%;
+    display: inline-block;
+    margin-left: auto;
+}
+
+.crisis-message .message-content {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+/* Mood Buttons */
+.mood-btn, .mood-select {
+    border-radius: 25px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    border: 2px solid;
+}
+
+.mood-btn:hover, .mood-select:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.mood-btn.active, .mood-select.active {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0,123,255,0.5);
+}
+
+/* Mood Calendar */
+.mood-day {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    margin: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #dee2e6;
+}
+
+.mood-day:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.mood-day.happy { background-color: #d4edda; border-color: #28a745; }
+.mood-day.sad { background-color: #f8d7da; border-color: #dc3545; }
+.mood-day.anxious { background-color: #fff3cd; border-color: #ffc107; }
+.mood-day.okay { background-color: #d1ecf1; border-color: #17a2b8; }
+
+/* Resource Cards */
+.resource-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.resource-card .card-header {
+    background: linear-gradient(45deg, var(--primary-color), var(--info-color));
+    color: white;
+    border: none;
+}
+
+/* Achievement Badges */
+.achievement-badge {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin: 5px;
+    display: inline-block;
+    font-size: 0.9em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    animation: bounceIn 0.6s ease;
+}
+
+/* Progress Stats */
+.stat-item {
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0,123,255,0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(0,123,255,0.2);
+    transform: translateX(5px);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+    }
+}
+
+/* Typing Indicator */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    float: left;
+    margin: 0 1px;
+    background-color: #9E9EA1;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.4;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .mood-quick-select {
+        flex-direction: column;
+        gap: 10px !important;
+    }
+    
+    .mood-btn {
+        width: 100%;
+    }
+    
+    .chat-messages {
+        height: 300px !important;
+    }
+    
+    .mood-day {
+        width: 35px;
+        height: 35px;
+        font-size: 1em;
+    }
+}
+
+/* Custom Scrollbar */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+/* Button Hover Effects */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+}
+
+/* Card Hover Effects */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Emergency Alert */
+.emergency-alert {
+    background: linear-gradient(45deg, #ff6b6b, #feca57);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 20px 0;
+    animation: pulse 2s infinite;
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

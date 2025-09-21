@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahara AI - Mental Wellness Chat</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-item:hover { background-color: #F7F6F4; }
+        .sidebar-item.active { background-color: #A8C69F; color: #2D3E2F; }
+        .typing-dots { animation: pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+        
+        /* ChatGPT-style Message Hover Effects */
+        .message-container:hover .message-actions {
+            opacity: 1;
+        }
+        
+        /* Message styling */
+        .message-container {
+            transition: background-color 0.2s ease;
+        }
+        
+        .message-container:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .dark .message-container:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .gradient-text { 
+            background: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%); 
+            -webkit-background-clip: text; 
+            background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        
+        /* Creative Theme Toggle */
+        .creative-theme-toggle {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .creative-theme-toggle:hover {
+            transform: scale(1.05);
+        }
+        
+        .toggle-container {
+            position: relative;
+            width: 64px;
+            height: 32px;
+        }
+        
+        .toggle-background {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #7C9885 0%, #6B9BD1 100%);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 2px 10px rgba(124, 152, 133, 0.3);
+        }
+        
+        .sun-moon-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            z-index: 1;
+        }
+        
+        .sun-icon, .moon-icon {
+            font-size: 12px;
+            color: white;
+            transition: all 0.4s ease;
+            opacity: 0.7;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        
+        .toggle-slider::after {
+            content: '☀️';
+            font-size: 14px;
+            transition: all 0.4s ease;
+        }
+        
+        /* Dark theme state */
+        .dark .toggle-background {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            box-shadow: 0 2px 10px rgba(30, 41, 59, 0.5);
+        }
+        
+        .dark .toggle-slider {
+            transform: translateX(32px);
+            background: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark .toggle-slider::after {
+            content: '🌙';
+        }
+        
+        .dark .sun-icon {
+            opacity: 0.3;
+        }
+        
+        .dark .moon-icon {
+            opacity: 1;
+        }
+        
+        /* Floating Theme Toggle (Alternative) */
+        .floating-theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .floating-theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .floating-theme-toggle i {
+            color: white;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .dark .floating-theme-toggle {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            box-shadow: 0 4px 20px rgba(30, 41, 59, 0.5);
+        }
+        
+        /* Professional Dark Mode - High Contrast */
+        .dark {
+            /* Deep professional dark background */
+            background-color: #0F1419;
+        }
+        
+        /* Message Borders in Dark Mode */
+        .dark .border-gray-100 {
+            border-color: #374151 !important;
+        }
+        
+        /* User message background in dark mode */
+        .dark .bg-gray-50 {
+            background-color: #1F2937 !important;
+        }
+        
+        /* Professional Sidebar - Distinct Colors */
+        .dark .w-64 { 
+            background-color: #111827;
+            border-right: 1px solid #374151;
+        }
+        
+        /* Sidebar Text Colors */
+        .dark .text-white {
+            color: #F3F4F6 !important;
+        }
+        
+        .dark .text-gray-400 {
+            color: #9CA3AF !important;
+        }
+        
+        /* Main Content Area */
+        .dark .bg-white {
+            background-color: #1F2937 !important;
+        }
+        
+        /* Header Dark Mode */
+        .dark header {
+            background-color: #111827 !important;
+            border-color: #374151 !important;
+        }
+        
+        /* Input Area Dark Mode */
+        .dark .border-t {
+            border-color: #374151 !important;
+            background-color: #111827 !important;
+        }
+        
+        /* Button Hover States */
+        .dark .hover\\:bg-gray-100:hover {
+            background-color: #374151 !important;
+        }
+        
+        .dark .hover\\:border-green-300:hover {
+            border-color: #059669 !important;
+        }
+        
+        .dark .hover\\:bg-green-50:hover {
+            background-color: #065F46 !important;
+        }
+        
+        /* Quick Start Buttons Dark Mode */
+        .dark .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        
+        .dark .group:hover {
+            background-color: #1F2937 !important;
+        }
+        
+        /* Status Indicator */
+        .dark .bg-green-50 {
+            background-color: #065F46 !important;
+        }
+        
+        /* Sidebar Hover Effects */
+        .dark .hover\\:bg-sidebar-hover:hover {
+            background-color: #1F2937 !important;
+        }
+        
+        /* Account Dropdown */
+        .dark .bg-white {
+            background-color: #1F2937 !important;
+            color: #F3F4F6 !important;
+        }
+        
+        /* Mobile Menu */
+        .dark .shadow-lg {
+            background-color: #1F2937 !important;
+            border-color: #374151 !important;
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Therapeutic Mental Wellness Palette
+                        'sage': {
+                            50: '#F7F6F4',
+                            100: '#A8C69F', 
+                            500: '#7C9885',
+                            600: '#5A7C65',
+                            700: '#2D3E2F'
+                        },
+                        'therapeutic-blue': {
+                            100: '#9BB8E0',
+                            500: '#6B9BD1', 
+                            700: '#4A7BA7'
+                        },
+                        'warm-terra': {
+                            100: '#E6C49A',
+                            500: '#D4A574',
+                            700: '#B8935F'
+                        },
+                        'chat-gray': '#F7F6F4',
+                        'chat-border': '#A8C69F',
+                        'sidebar-bg': '#2D3E2F',
+                        'sidebar-hover': '#5A7C65',
+                        // Warm Dark Mode Colors
+                        'dark-warm': {
+                            50: '#F7F6F4',   // Light text on dark
+                            100: '#E5E3E0',  // Secondary text  
+                            200: '#C4C1BC',  // Borders
+                            300: '#A39E97',  // Muted elements
+                            700: '#3A4A3C',  // Dark surfaces
+                            800: '#2D3E2F',  // Darker surfaces
+                            900: '#1F2D21'   // Darkest background
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="h-full bg-white dark:bg-gray-900 transition-colors duration-500" x-data="saharaChat()" @keydown.cmd.k.prevent="newChat()" @keydown.ctrl.k.prevent="newChat()">
+    
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 dark:bg-gray-900 text-white flex flex-col" :class="{ 'hidden': !sidebarOpen }" x-show="sidebarOpen || !isMobile">
+            
+            <!-- Sidebar Header -->
+            <div class="p-4 border-b border-gray-600 dark:border-gray-700">
+                <button @click="newChat()" class="w-full flex items-center justify-center space-x-2 py-3 px-4 bg-transparent border border-gray-600 dark:border-gray-500 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-800 transition-colors">
+                    <i class="fas fa-plus text-sm"></i>
+                    <span class="font-medium">New chat</span>
+                </button>
+            </div>
+            
+            <!-- Chat History -->
+            <div class="flex-1 overflow-y-auto p-2">
+                <div class="space-y-1">
+                    <!-- Empty State -->
+                    <div x-show="chatSessions.length === 0" class="px-3 py-8 text-center">
+                        <div class="text-gray-400 text-sm">
+                            <i class="fas fa-comments text-2xl mb-3 block"></i>
+                            <p class="mb-2">No chats yet</p>
+                            <p class="text-xs text-gray-500">Start a conversation to see it here</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Today -->
+                    <div x-show="todayChats.length > 0" class="px-3 py-2 text-xs text-gray-400 font-medium uppercase tracking-wide">Today</div>
+                    <template x-for="chat in todayChats" :key="chat.id">
+                        <div @click="selectChat(chat)" 
+                             :class="{ 'bg-gray-700 dark:bg-gray-800': currentChatId === chat.id }"
+                             class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-700 dark:hover:bg-gray-800 group">
+                            <div class="flex items-center space-x-3 min-w-0 flex-1">
+                                <i class="fas fa-comment-dots text-gray-400 text-sm"></i>
+                                <span class="text-sm truncate" x-text="chat.title"></span>
+                            </div>
+                            <div class="opacity-0 group-hover:opacity-100 flex space-x-1">
+                                <button @click.stop="renameChat(chat)" class="p-1 hover:bg-gray-600 rounded">
+                                    <i class="fas fa-edit text-xs text-gray-400"></i>
+                                </button>
+                                <button @click.stop="deleteChat(chat.id)" class="p-1 hover:bg-gray-600 rounded">
+                                    <i class="fas fa-trash text-xs text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <!-- Previous 7 Days -->
+                    <div x-show="weekChats.length > 0" class="px-3 py-2 text-xs text-gray-400 font-medium uppercase tracking-wide mt-4">Previous 7 days</div>
+                    <template x-for="chat in weekChats" :key="chat.id">
+                        <div @click="selectChat(chat)" 
+                             :class="{ 'bg-gray-700 dark:bg-gray-800': currentChatId === chat.id }"
+                             class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-700 dark:hover:bg-gray-800 group">
+                            <div class="flex items-center space-x-3 min-w-0 flex-1">
+                                <i class="fas fa-comment-dots text-gray-400 text-sm"></i>
+                                <span class="text-sm truncate" x-text="chat.title"></span>
+                            </div>
+                            <div class="opacity-0 group-hover:opacity-100 flex space-x-1">
+                                <button @click.stop="renameChat(chat)" class="p-1 hover:bg-gray-600 rounded">
+                                    <i class="fas fa-edit text-xs text-gray-400"></i>
+                                </button>
+                                <button @click.stop="deleteChat(chat.id)" class="p-1 hover:bg-gray-600 rounded">
+                                    <i class="fas fa-trash text-xs text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Sidebar Footer - User Account -->
+            <div class="border-t border-gray-700 p-3">
+                <div class="relative" x-data="{ accountOpen: false }">
+                    <button @click="accountOpen = !accountOpen" 
+                            class="w-full flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-gray-700 dark:hover:bg-gray-800 transition-colors">
+                        <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center text-sm font-bold">
+                            <span x-text="user.loggedIn ? user.username.charAt(0).toUpperCase() : 'G'"></span>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <div class="text-sm font-medium" x-text="user.loggedIn ? user.username : 'Guest User'"></div>
+                            <div class="text-xs text-gray-400" x-text="user.loggedIn ? user.email : 'Sign in to save chats'"></div>
+                        </div>
+                        <i class="fas fa-ellipsis-h text-gray-400"></i>
+                    </button>
+                    
+                    <!-- Account Dropdown -->
+                    <div x-show="accountOpen" @click.away="accountOpen = false" 
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         class="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-lg border py-1 text-gray-700">
+                        
+                        <template x-if="!user.loggedIn">
+                            <div>
+                                <button @click="showLoginModal = true; accountOpen = false" 
+                                        class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center space-x-2">
+                                    <i class="fas fa-sign-in-alt text-gray-400"></i>
+                                    <span>Log in</span>
+                                </button>
+                                <button @click="showRegisterModal = true; accountOpen = false" 
+                                        class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center space-x-2">
+                                    <i class="fas fa-user-plus text-gray-400"></i>
+                                    <span>Sign up</span>
+                                </button>
+                            </div>
+                        </template>
+                        
+                        <template x-if="user.loggedIn">
+                            <div>
+                                <button @click="showProfile = true; accountOpen = false" 
+                                        class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center space-x-2">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                    <span>My Profile</span>
+                                </button>
+                                <button @click="exportChats(); accountOpen = false" 
+                                        class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center space-x-2">
+                                    <i class="fas fa-download text-gray-400"></i>
+                                    <span>Export chats</span>
+                                </button>
+                                <hr class="my-1">
+                                <button @click="logout(); accountOpen = false" 
+                                        class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center space-x-2 text-red-600">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Log out</span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col bg-white dark:bg-gray-900">
+            
+            <!-- Top Header -->
+            <header class="sticky top-0 z-10 border-b border-gray-200 dark:border-gray-700 px-4 py-3 bg-white dark:bg-gray-800">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 hover:bg-gray-100 rounded-lg">
+                            <i class="fas fa-bars text-gray-600"></i>
+                        </button>
+                        <a href="/chat" class="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer">
+                            <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-leaf text-white text-sm"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-lg font-bold text-gray-900 dark:text-dark-warm-50">Sahara AI</h1>
+                                <p class="text-xs text-gray-500 dark:text-dark-warm-100">Mental Wellness Companion</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Navigation Buttons -->
+                        <div class="hidden md:flex items-center space-x-2 ml-6">
+                            <a href="/mood-analytics" class="flex items-center space-x-1 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                <i class="fas fa-chart-line text-xs"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="/mood-analytics" class="flex items-center space-x-1 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                <i class="fas fa-heart text-xs"></i>
+                                <span>Mood</span>
+                            </a>
+                            <a href="/resources" class="flex items-center space-x-1 px-3 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                                <i class="fas fa-book text-xs"></i>
+                                <span>Resources</span>
+                            </a>
+                            <a href="/crisis-support" class="flex items-center space-x-1 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                                <i class="fas fa-exclamation-triangle text-xs"></i>
+                                <span>Crisis</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Status & Model Info -->
+                    <div class="flex items-center space-x-4">
+                        <div class="hidden sm:flex items-center space-x-2 px-3 py-1 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full text-sm">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span>Gemini AI</span>
+                        </div>
+                        
+                        <!-- Creative Theme Toggle -->
+                        <div class="creative-theme-toggle" @click="toggleTheme()">
+                            <div class="toggle-container">
+                                <div class="toggle-background">
+                                    <div class="sun-moon-container">
+                                        <i class="fas fa-sun sun-icon"></i>
+                                        <i class="fas fa-moon moon-icon"></i>
+                                    </div>
+                                    <div class="toggle-slider"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mobile Menu -->
+                        <div class="sm:hidden relative" x-data="{ mobileMenuOpen: false }">
+                            <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2 hover:bg-gray-100 rounded-lg">
+                                <i class="fas fa-ellipsis-v text-gray-600"></i>
+                            </button>
+                            <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false" 
+                                 class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border py-1">
+                                <!-- Navigation Options -->
+                                <a href="/mood-analytics" class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center">
+                                    <i class="fas fa-chart-line mr-2 text-xs"></i>Dashboard
+                                </a>
+                                <a href="/mood-analytics" class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center">
+                                    <i class="fas fa-heart mr-2 text-xs"></i>Mood Analytics
+                                </a>
+                                <a href="/resources" class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center">
+                                    <i class="fas fa-book mr-2 text-xs"></i>Resources
+                                </a>
+                                <a href="/crisis-support" class="w-full px-4 py-2 text-left text-sm hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 flex items-center">
+                                    <i class="fas fa-exclamation-triangle mr-2 text-xs"></i>Crisis Support
+                                </a>
+                                <div class="border-t my-1"></div>
+                                
+                                <template x-if="!user.loggedIn">
+                                    <div>
+                                        <button @click="showLoginModal = true; mobileMenuOpen = false" 
+                                                class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Log in</button>
+                                        <button @click="showRegisterModal = true; mobileMenuOpen = false" 
+                                                class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Sign up</button>
+                                    </div>
+                                </template>
+                                <template x-if="user.loggedIn">
+                                    <div>
+                                        <button @click="showProfile = true; mobileMenuOpen = false" 
+                                                class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Profile</button>
+                                        <button @click="logout(); mobileMenuOpen = false" 
+                                                class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600">Log out</button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Chat Messages Area -->
+            <div class="flex-1 overflow-y-auto">
+                <!-- Welcome Screen (No Chat Selected) -->
+                <div x-show="!currentChatId && messages.length === 0" class="h-full flex items-center justify-center p-8">
+                    <div class="text-center max-w-2xl">
+                        <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-leaf text-white text-2xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-dark-warm-50 mb-4">Welcome to Sahara AI</h2>
+                        <p class="text-lg text-gray-600 dark:text-dark-warm-100 mb-8">
+                            Your AI companion for mental wellness. Share your thoughts, feelings, and concerns in a safe, judgment-free space.
+                        </p>
+                        
+                        <!-- Quick Start Options -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                            <button @click="quickStart('मुझे पढ़ाई का pressure बहुत feel हो रहा है')" 
+                                    class="p-4 border border-gray-200 rounded-lg hover:border-..300 hover:bg-green-50 text-left group transition-all">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-book text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-dark-warm-50 group-hover:text-green-700">Study Stress</div>
+                                        <div class="text-sm text-gray-500 dark:text-dark-warm-100">Academic pressure & exam anxiety</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button @click="quickStart('Family expectations ke baare mein baat karni hai')" 
+                                    class="p-4 border border-gray-200 rounded-lg hover:border-green-300 hover:bg-green-50 text-left group transition-all">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-home text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-dark-warm-50 group-hover:text-green-700">Family Issues</div>
+                                        <div class="text-sm text-gray-500 dark:text-dark-warm-100">Expectations & relationships</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button @click="quickStart('I am feeling anxious and need support')" 
+                                    class="p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 text-left group transition-all">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-heart text-yellow-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-dark-warm-50 group-hover:text-therapeutic-blue-500">Anxiety Support</div>
+                                        <div class="text-sm text-gray-500 dark:text-dark-warm-100">Worry & stress management</div>
+                                    </div>
+                                </div>
+                            </button>
+                            
+                            <button @click="quickStart('Need motivation for my goals')" 
+                                    class="p-4 border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 text-left group transition-all">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-rocket text-green-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-dark-warm-50 group-hover:text-therapeutic-blue-500">Motivation</div>
+                                        <div class="text-sm text-gray-500 dark:text-dark-warm-100">Goals & inspiration</div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <p class="text-sm text-gray-500 dark:text-dark-warm-100">
+                            <i class="fas fa-shield-alt mr-1"></i>
+                            Your conversations are private and secure. 
+                            <template x-if="user.loggedIn">
+                                <span>Chats are automatically saved to your account.</span>
+                            </template>
+                            <template x-if="!user.loggedIn">
+                                <span>Sign in to save your chat history.</span>
+                            </template>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Chat Messages -->
+                <div x-show="messages.length > 0" class="w-full">
+                    <template x-for="message in messages" :key="message.id">
+                        <!-- ChatGPT-style Message Container -->
+                        <div class="w-full border-b border-gray-100 dark:border-gray-800 message-container group" :class="message.sender === 'user' ? 'bg-gray-50 dark:bg-gray-800' : 'bg-white dark:bg-gray-900'">
+                            <div class="max-w-4xl mx-auto px-4 py-6">
+                                <div class="flex space-x-4">
+                                    <!-- Avatar -->
+                                    <div class="flex-shrink-0">
+                                        <template x-if="message.sender === 'user'">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-sm flex items-center justify-center text-white text-sm font-bold">
+                                                <span x-text="user.loggedIn ? user.username.charAt(0).toUpperCase() : 'U'"></span>
+                                            </div>
+                                        </template>
+                                        <template x-if="message.sender === 'ai'">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-sm flex items-center justify-center">
+                                                <i class="fas fa-leaf text-white text-sm"></i>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    
+                                    <!-- Message Content -->
+                                    <div class="flex-1 min-w-0">
+                                        <!-- Sender Label -->
+                                        <div class="text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                                            <span x-text="message.sender === 'user' ? (user.loggedIn ? user.username : 'You') : 'Sahara AI'"></span>
+                                        </div>
+                                        
+                                        <!-- Message Text -->
+                                        <div class="prose prose-gray dark:prose-invert max-w-none">
+                                            <div class="text-gray-800 dark:text-gray-200 leading-relaxed whitespace-pre-wrap" x-html="formatMessage(message.text)"></div>
+                                        </div>
+                                        
+                                        <!-- Message Actions & Timestamp -->
+                                        <div class="flex items-center justify-between mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div class="flex space-x-2">
+                                                <template x-if="message.sender === 'ai'">
+                                                    <div class="flex space-x-1">
+                                                        <button @click="copyMessage(message.text)" 
+                                                                class="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" 
+                                                                title="Copy message">
+                                                            <i class="fas fa-copy text-xs"></i>
+                                                        </button>
+                                                        <button class="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" 
+                                                                title="Regenerate response">
+                                                            <i class="fas fa-redo text-xs"></i>
+                                                        </button>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="text-xs text-gray-400 dark:text-gray-500" x-text="message.timestamp"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <!-- Typing Indicator -->
+                    <div x-show="isTyping" class="w-full bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
+                        <div class="max-w-4xl mx-auto px-4 py-6">
+                            <div class="flex space-x-4">
+                                <div class="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-sm flex items-center justify-center">
+                                    <i class="fas fa-leaf text-white text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">Sahara AI</div>
+                                    <div class="flex space-x-1">
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-dots"></div>
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-dots" style="animation-delay: 0.2s"></div>
+                                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-dots" style="animation-delay: 0.4s"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="relative">
+                        <textarea 
+                            x-model="currentMessage"
+                            @keydown.enter.prevent="!$event.shiftKey && sendMessage()"
+                            placeholder="Message Sahara AI..."
+                            rows="1"
+                            class="w-full pr-12 pl-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 resize-none placeholder-gray-500 dark:placeholder-gray-400"
+                            :disabled="isTyping"
+                            style="max-height: 120px; min-height: 48px;"
+                            @input="autoResize($event.target)"
+                        ></textarea>
+                        
+                        <button 
+                            @click="sendMessage()" 
+                            :disabled="!currentMessage.trim() || isTyping"
+                            class="absolute right-12 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white rounded-lg flex items-center justify-center transition-colors"
+                        >
+                            <i class="fas fa-paper-plane text-sm"></i>
+                        </button>
+                        
+                        <!-- Debug Button: Scroll to Latest Chat -->
+                        <button 
+                            @click="scrollToBottomNow()" 
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center transition-colors text-xs"
+                            title="Scroll to Latest Message"
+                        >
+                            ↓
+                        </button>
+                    </div>
+                    
+                    <div class="flex justify-center mt-2">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 text-center max-w-lg">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Sahara AI is here to listen and support you, but I'm not a replacement for professional help. 
+                            For serious mental health concerns, please consider talking to a counselor or therapist.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- GitHub-Style Login Modal -->
+    <div x-show="showLoginModal" 
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-gray-800 bg-opacity-75 backdrop-blur-sm" @click="showLoginModal = false"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-2xl w-full max-w-sm p-8 border border-gray-200 dark:border-gray-700"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-95"
+             x-transition:enter-end="opacity-100 transform scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-95">
+            
+            <!-- Sahara Logo -->
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full mb-4">
+                    <span class="text-white font-bold text-xl">S</span>
+                </div>
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Sign in to Sahara</h1>
+            </div>
+            
+            <!-- Login Form -->
+            <form @submit.prevent="login()" class="space-y-4">
+                <!-- Username Field -->
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Username or email address
+                    </label>
+                    <input x-model="loginForm.username" 
+                           id="username"
+                           type="text" 
+                           required 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                  transition-colors duration-200"
+                           placeholder="Username or email">
+                </div>
+                
+                <!-- Password Field -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Password
+                        </label>
+                        <a href="#" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                            Forgot password?
+                        </a>
+                    </div>
+                    <input x-model="loginForm.password" 
+                           id="password"
+                           type="password" 
+                           required 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                  transition-colors duration-200"
+                           placeholder="Password">
+                </div>
+                
+                <!-- Sign In Button -->
+                <button type="submit" 
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-md 
+                               transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                    Sign in
+                </button>
+            </form>
+            
+
+            
+            <!-- Sign Up Link -->
+            <div class="mt-6 text-center text-sm">
+                <span class="text-gray-600 dark:text-gray-400">New to Sahara? </span>
+                <button @click="showLoginModal = false; showRegisterModal = true" 
+                        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                    Create an account
+                </button>
+            </div>
+            
+            <!-- Privacy Notice -->
+            <div class="mt-6 text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    Your conversations are private and secure. Sign in to save your chat history.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- GitHub-Style Register Modal -->
+    <div x-show="showRegisterModal" 
+         class="fixed inset-0 z-50 flex items-center justify-center p-4"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-gray-800 bg-opacity-75 backdrop-blur-sm" @click="showRegisterModal = false"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative bg-white dark:bg-gray-900 rounded-lg shadow-2xl w-full max-w-sm p-8 border border-gray-200 dark:border-gray-700"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-95"
+             x-transition:enter-end="opacity-100 transform scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-95">
+            
+            <!-- Sahara Logo -->
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full mb-4">
+                    <span class="text-white font-bold text-xl">S</span>
+                </div>
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Join Sahara</h1>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Start your wellness journey today</p>
+            </div>
+            
+            <!-- Register Form -->
+            <form @submit.prevent="register()" class="space-y-4">
+                <!-- Username Field -->
+                <div>
+                    <label for="reg-username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Username
+                    </label>
+                    <input x-model="registerForm.username" 
+                           id="reg-username"
+                           type="text" 
+                           required 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                  transition-colors duration-200"
+                           placeholder="Choose a username">
+                </div>
+                
+                <!-- Email Field -->
+                <div>
+                    <label for="reg-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Email address
+                    </label>
+                    <input x-model="registerForm.email" 
+                           id="reg-email"
+                           type="email" 
+                           required 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                  transition-colors duration-200"
+                           placeholder="Enter your email">
+                </div>
+                
+                <!-- Password Field -->
+                <div>
+                    <label for="reg-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Password
+                    </label>
+                    <input x-model="registerForm.password" 
+                           id="reg-password"
+                           type="password" 
+                           required 
+                           class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                                  bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                                  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                                  transition-colors duration-200"
+                           placeholder="Create a password">
+                </div>
+                
+                <!-- Create Account Button -->
+                <button type="submit" 
+                        class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-md 
+                               transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                    Create account
+                </button>
+            </form>
+            
+            <!-- Terms Notice -->
+            <div class="mt-4 text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    By creating an account, you agree to our 
+                    <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Terms</a> and 
+                    <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Privacy Policy</a>.
+                </p>
+            </div>
+            
+            <!-- Sign In Link -->
+            <div class="mt-6 text-center text-sm">
+                <span class="text-gray-600 dark:text-gray-400">Already have an account? </span>
+                <button @click="showRegisterModal = false; showLoginModal = true" 
+                        class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                    Sign in
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Modal -->
+    <div x-show="showProfile" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" @click.self="showProfile = false">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">Profile & Settings</h2>
+                <button @click="showProfile = false" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Profile Info -->
+                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                        <span x-text="user.username ? user.username.charAt(0).toUpperCase() : 'U'"></span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-lg" x-text="user.username"></h3>
+                        <p class="text-gray-600" x-text="user.email"></p>
+                        <p class="text-sm text-gray-500" x-text="'Member since ' + (user.joined || 'Recently')"></p>
+                    </div>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-blue-600" x-text="chatSessions.length"></div>
+                        <div class="text-sm text-blue-600">Total Chats</div>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-green-600" x-text="Math.max(7, chatSessions.length)"></div>
+                        <div class="text-sm text-green-600">Days Active</div>
+                    </div>
+                </div>
+                
+                <!-- Export Options -->
+                <div>
+                    <h4 class="font-medium mb-2">Export your data</h4>
+                    <button @click="exportChats()" class="w-full p-3 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center space-x-2">
+                        <i class="fas fa-download text-gray-600"></i>
+                        <span>Export all conversations</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function saharaChat() {
+            return {
+                // UI State
+                sidebarOpen: true,
+                isMobile: window.innerWidth < 1024,
+                showLoginModal: false,
+                showRegisterModal: false,
+                showProfile: false,
+                
+                // Chat State
+                messages: [],
+                currentMessage: '',
+                isTyping: false,
+                sessionId: 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                
+                // Chat Management
+                chatSessions: [],
+                currentChatId: null,
+                
+                // User State - Initialize with server data
+                user: {
+                    loggedIn: {% if user_context and user_context.is_authenticated %}true{% else %}false{% endif %},
+                    username: '{% if user_context and user_context.username %}{{ user_context.username }}{% endif %}',
+                    email: '{% if user_context and user_context.email %}{{ user_context.email }}{% endif %}',
+                    joined: '{% if user_context and user_context.created_at %}{{ user_context.created_at }}{% endif %}',
+                    sessionId: '{% if user_context and user_context.session_id %}{{ user_context.session_id }}{% endif %}',
+                    isAnonymous: {% if user_context and user_context.is_anonymous %}true{% else %}false{% endif %}
+                },
+                
+                // Mood Context Data from Server
+                moodContext: {% if recent_mood_data %}{{ recent_mood_data | tojson }}{% else %}null{% endif %},
+                loginForm: { username: '', password: '' },
+                registerForm: { username: '', email: '', password: '' },
+                
+                init() {
+                    // Track session start time for user journey analysis
+                    this.sessionStartTime = Date.now();
+                    
+                    this.handleResize();
+                    window.addEventListener('resize', () => this.handleResize());
+                    
+                    // Initialize theme
+                    this.initTheme();
+                    
+                    // Aggressive scroll on page load and DOM ready
+                    window.addEventListener('load', () => {
+                        console.log('🔄 Page load event - forcing scroll...');
+                        if (this.messages.length > 0) {
+                            this.scrollToBottomNow();
+                            setTimeout(() => this.scrollToBottomNow(), 500);
+                            setTimeout(() => this.scrollToBottomNow(), 1000);
+                        }
+                    });
+                    
+                    // Also listen for DOM content loaded
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', () => {
+                            setTimeout(() => {
+                                if (this.messages.length > 0) {
+                                    console.log('🔄 DOM ready - forcing scroll...');
+                                    this.scrollToBottomNow();
+                                }
+                            }, 200);
+                        });
+                    }
+                    
+                    // Load saved user session (if exists) before anything else
+                    this.loadUserSession();
+                    
+                    // Initialize mood-aware chat context
+                    this.initializeMoodContext();
+                    
+                    // Clear any guest sessions if not logged in
+                    this.clearGuestSessions();
+                    
+                    // Load saved chat sessions (only for logged-in users)
+                    this.loadChatSessions();
+                    
+                    // Watch for messages changes and auto-scroll (ChatGPT style)
+                    this.$watch('messages', () => {
+                        if (this.messages.length > 0) {
+                            console.log('📬 Messages changed, triggering scroll...');
+                            // Multiple scroll attempts for reliability
+                            this.$nextTick(() => {
+                                const container = document.querySelector('.flex-1.overflow-y-auto');
+                                if (container) {
+                                    container.scrollTop = container.scrollHeight;
+                                    setTimeout(() => {
+                                        container.scrollTop = container.scrollHeight;
+                                    }, 50);
+                                    setTimeout(() => {
+                                        container.scrollTop = container.scrollHeight;
+                                    }, 100);
+                                }
+                            });
+                        }
+                    }, { deep: true });
+                    
+                    // Ensure scrolling works after everything is loaded (ROBUST)
+                    this.$nextTick(() => {
+                        const scrollNow = () => {
+                            if (this.messages.length > 0) {
+                                console.log('🔄 Page load scroll attempt...');
+                                this.scrollToBottomNow();
+                            }
+                        };
+                        
+                        // Very aggressive scroll attempts for reliable page load behavior
+                        scrollNow();
+                        setTimeout(scrollNow, 100);
+                        setTimeout(scrollNow, 300);
+                        setTimeout(scrollNow, 600);
+                        setTimeout(scrollNow, 1000);
+                        setTimeout(scrollNow, 1500);
+                        setTimeout(scrollNow, 2000);
+                        setTimeout(scrollNow, 3000);
+                    });
+                },
+                
+                // Theme Management
+                initTheme() {
+                    const savedTheme = localStorage.getItem('sahara-theme') || 'light';
+                    document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+                },
+                
+                toggleTheme() {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    const newTheme = isDark ? 'light' : 'dark';
+                    
+                    document.documentElement.classList.toggle('dark', newTheme === 'dark');
+                    localStorage.setItem('sahara-theme', newTheme);
+                    
+                    // Add a subtle animation effect
+                    document.body.style.transition = 'background-color 0.5s ease';
+                    setTimeout(() => {
+                        document.body.style.transition = '';
+                    }, 500);
+                },
+                
+                handleResize() {
+                    this.isMobile = window.innerWidth < 1024;
+                    if (!this.isMobile) {
+                        this.sidebarOpen = true;
+                    }
+                },
+                
+                // Chat Management
+                get todayChats() {
+                    const today = new Date().toDateString();
+                    return this.chatSessions.filter(chat => 
+                        new Date(chat.lastActivity).toDateString() === today
+                    );
+                },
+                
+                get weekChats() {
+                    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                    const today = new Date().toDateString();
+                    return this.chatSessions.filter(chat => {
+                        const chatDate = new Date(chat.lastActivity);
+                        return chatDate >= weekAgo && chatDate.toDateString() !== today;
+                    });
+                },
+                
+                newChat() {
+                    this.currentChatId = null;
+                    this.messages = [];
+                    this.sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    if (this.isMobile) this.sidebarOpen = false;
+                },
+                
+                selectChat(chat) {
+                    this.currentChatId = chat.id;
+                    this.messages = chat.messages || [];
+                    this.sessionId = chat.sessionId;
+                    if (this.isMobile) this.sidebarOpen = false;
+                    
+                    // Auto-scroll to bottom when selecting a chat (ChatGPT style)
+                    this.$nextTick(() => {
+                        const container = document.querySelector('.flex-1.overflow-y-auto');
+                        if (container) container.scrollTop = container.scrollHeight;
+                    });
+                },
+                
+                saveChatSession() {
+                    // Save chat sessions for both logged-in users AND guest users
+                    if (this.messages.length === 0) return;
+                    
+                    const title = this.generateChatTitle();
+                    const existingChatIndex = this.chatSessions.findIndex(chat => chat.id === this.currentChatId);
+                    
+                    if (existingChatIndex >= 0) {
+                        // Update existing chat
+                        this.chatSessions[existingChatIndex].messages = [...this.messages];
+                        this.chatSessions[existingChatIndex].lastActivity = new Date().toISOString();
+                        this.chatSessions[existingChatIndex].title = title;
+                    } else {
+                        // Create new chat session
+                        this.currentChatId = 'chat_' + Date.now();
+                        this.chatSessions.unshift({
+                            id: this.currentChatId,
+                            title: title,
+                            messages: [...this.messages],
+                            sessionId: this.sessionId,
+                            lastActivity: new Date().toISOString(),
+                            userType: this.user.loggedIn ? 'authenticated' : 'guest'
+                        });
+                    }
+                    
+                    this.saveChatSessions();
+                    
+                    // Debug log for verification
+                    console.log(`💾 Chat saved: ${title} (${this.user.loggedIn ? 'logged-in' : 'guest'} user)`);
+                    console.log(`📊 Total chats: ${this.chatSessions.length}`);
+                },
+                
+                generateChatTitle() {
+                    const firstUserMessage = this.messages.find(m => m.sender === 'user');
+                    if (firstUserMessage) {
+                        return firstUserMessage.text.length > 30 
+                            ? firstUserMessage.text.substring(0, 30) + '...'
+                            : firstUserMessage.text;
+                    }
+                    return 'New conversation';
+                },
+                
+                deleteChat(chatId) {
+                    if (confirm('Delete this conversation?')) {
+                        this.chatSessions = this.chatSessions.filter(chat => chat.id !== chatId);
+                        if (this.currentChatId === chatId) {
+                            this.newChat();
+                        }
+                        this.saveChatSessions();
+                    }
+                },
+                
+                renameChat(chat) {
+                    const newTitle = prompt('Rename conversation:', chat.title);
+                    if (newTitle && newTitle.trim()) {
+                        chat.title = newTitle.trim();
+                        this.saveChatSessions();
+                    }
+                },
+                
+                // Storage (chat persistence for both guest and logged-in users)
+                loadChatSessions() {
+                    try {
+                        if (this.user.loggedIn && this.user.username) {
+                            // Load user-specific chat history
+                            const userKey = `sahara_chat_sessions_${this.user.username}`;
+                            const saved = localStorage.getItem(userKey);
+                            if (saved) {
+                                this.chatSessions = JSON.parse(saved);
+                                console.log(`📚 Loaded ${this.chatSessions.length} chats for user: ${this.user.username}`);
+                            } else {
+                                this.chatSessions = [];
+                                console.log(`📚 No previous chats found for user: ${this.user.username}`);
+                            }
+                        } else {
+                            // Load guest session chat history
+                            const guestKey = 'sahara_chat_sessions_guest';
+                            const saved = localStorage.getItem(guestKey);
+                            if (saved) {
+                                this.chatSessions = JSON.parse(saved);
+                                console.log(`📚 Loaded ${this.chatSessions.length} guest chats`);
+                            } else {
+                                this.chatSessions = [];
+                                console.log(`📚 No previous guest chats found`);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error loading chat sessions:', error);
+                        this.chatSessions = [];
+                    }
+                },
+                
+                saveChatSessions() {
+                    // Save chat sessions for both logged-in users AND guest users
+                    try {
+                        if (this.user.loggedIn && this.user.username) {
+                            // Save user-specific chat history
+                            const userKey = `sahara_chat_sessions_${this.user.username}`;
+                            localStorage.setItem(userKey, JSON.stringify(this.chatSessions));
+                            console.log(`💾 Saved ${this.chatSessions.length} chats for user: ${this.user.username}`);
+                        } else {
+                            // Save guest session chat history
+                            const guestKey = 'sahara_chat_sessions_guest';
+                            localStorage.setItem(guestKey, JSON.stringify(this.chatSessions));
+                            console.log(`💾 Saved ${this.chatSessions.length} guest chats`);
+                        }
+                    } catch (error) {
+                        console.error('Error saving chat sessions:', error);
+                    }
+                },
+                
+                // Save user's chats with their username as key
+                saveUserChats() {
+                    if (this.user.loggedIn && this.user.username && this.chatSessions.length > 0) {
+                        const userKey = `sahara_chat_sessions_${this.user.username}`;
+                        localStorage.setItem(userKey, JSON.stringify(this.chatSessions));
+                    }
+                },
+                
+                // Load specific user's chats
+                loadUserChats(username) {
+                    const userKey = `sahara_chat_sessions_${username}`;
+                    const saved = localStorage.getItem(userKey);
+                    if (saved) {
+                        this.chatSessions = JSON.parse(saved);
+                    } else {
+                        this.chatSessions = [];
+                    }
+                },
+                
+                // Chat functionality
+                quickStart(message) {
+                    this.currentMessage = message;
+                    this.sendMessage();
+                },
+                
+                async sendMessage() {
+                    if (!this.currentMessage.trim()) return;
+                    
+                    const message = this.currentMessage.trim();
+                    this.currentMessage = '';
+                    
+                    // Add user message
+                    this.messages.push({
+                        id: Date.now(),
+                        text: message,
+                        sender: 'user',
+                        timestamp: new Date().toLocaleTimeString()
+                    });
+                    
+                    // IMMEDIATELY scroll to show user's message - multiple approaches
+                    console.log('🚀 User sent message, forcing scroll to bottom...');
+                    console.log('📊 Current messages count:', this.messages.length);
+                    
+                    // Force scroll immediately after adding message
+                    this.$nextTick(() => {
+                        console.log('📤 Message sent - scrolling to bottom...');
+                        this.scrollToBottomNow();
+                        
+                        // Additional attempts for reliability
+                        setTimeout(() => this.scrollToBottomNow(), 50);
+                        setTimeout(() => this.scrollToBottomNow(), 100);
+                    });
+                    
+                    this.isTyping = true;
+                    
+                    // Save current chat state
+                    this.saveCurrentChatState();
+                    
+                    try {
+                        // Prepare comprehensive context for mood-aware chat
+                        const chatContext = {
+                            session_id: this.sessionId,
+                            user_journey: {
+                                entry_point: this.user.loggedIn ? 'authenticated_user' : 'anonymous_user',
+                                user_state: this.moodContext ? 'has_mood_data' : 'no_mood_data',
+                                has_tracked_mood: this.moodContext ? true : false,
+                                session_duration: Date.now() - (this.sessionStartTime || Date.now())
+                            }
+                        };
+                        
+                        // Include mood data for anonymous users
+                        let moodData = {};
+                        if (this.moodContext) {
+                            moodData = {
+                                recent_rating: this.moodContext.intensity,
+                                recent_emotion: this.moodContext.latest_mood,
+                                dominant_emotions: [this.moodContext.latest_mood],
+                                wellness_trend: this.analyzeMoodTrend(),
+                                notes: this.moodContext.notes
+                            };
+                        }
+                        
+                        const response = await fetch('/chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                message: message,
+                                context: chatContext,
+                                mood_data: moodData
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            
+                            setTimeout(() => {
+                                this.isTyping = false;
+                                this.messages.push({
+                                    id: Date.now() + 1,
+                                    text: data.message || data.response || 'Sorry, I encountered an issue.',
+                                    sender: 'ai',
+                                    timestamp: new Date().toLocaleTimeString()
+                                });
+                                
+                                this.saveChatSession();
+                                this.saveCurrentChatState();
+                                
+                                // Force scroll to show AI response (ChatGPT style)
+                                const container = document.querySelector('.flex-1.overflow-y-auto');
+                                if (container) container.scrollTop = container.scrollHeight;
+                            }, 1500);
+                        } else {
+                            this.handleError();
+                        }
+                    } catch (error) {
+                        this.handleError();
+                    }
+                },
+                
+                handleError() {
+                    this.isTyping = false;
+                    this.messages.push({
+                        id: Date.now() + 1,
+                        text: 'Sorry, I encountered an error. Please try again! 😊',
+                        sender: 'ai',
+                        timestamp: new Date().toLocaleTimeString()
+                    });
+                    this.scrollToBottom();
+                },
+                
+                scrollToBottom() {
+                    this.$nextTick(() => {
+                        const container = document.querySelector('.overflow-y-auto');
+                        if (container) {
+                            container.scrollTop = container.scrollHeight;
+                        }
+                    });
+                },
+                
+                // Improved scrolling to show latest message at the bottom
+                scrollToLatestMessage() {
+                    this.$nextTick(() => {
+                        // Try multiple times to ensure scroll works
+                        setTimeout(() => {
+                            const container = document.querySelector('.flex-1.overflow-y-auto');
+                            if (container && this.messages.length > 0) {
+                                // Force scroll to absolute bottom
+                                container.scrollTop = container.scrollHeight;
+                                
+                                // Also try smooth scroll as backup
+                                setTimeout(() => {
+                                    container.scrollTo({
+                                        top: container.scrollHeight,
+                                        behavior: 'smooth'
+                                    });
+                                }, 50);
+                            }
+                        }, 50);
+                    });
+                },
+                
+                // ROBUST scroll to bottom implementation
+                forceScrollToBottom() {
+                    const scrollToBottom = () => {
+                        // Try multiple selectors to find the chat container
+                        const selectors = [
+                            '.flex-1.overflow-y-auto',
+                            '.overflow-y-auto',
+                            '[class*="overflow-y-auto"]',
+                            '.chat-messages',
+                            '.messages-container'
+                        ];
+                        
+                        let container = null;
+                        for (const selector of selectors) {
+                            const elements = document.querySelectorAll(selector);
+                            for (const el of elements) {
+                                // Find container that has actual scrollable content
+                                if (el.scrollHeight > el.clientHeight) {
+                                    container = el;
+                                    break;
+                                }
+                            }
+                            if (container) break;
+                        }
+                        
+                        if (container) {
+                            const oldScrollTop = container.scrollTop;
+                            container.scrollTop = container.scrollHeight;
+                            console.log(`✅ Scroll success: ${oldScrollTop} → ${container.scrollTop} (max: ${container.scrollHeight})`);
+                            return true;
+                        } else {
+                            console.log('❌ No scrollable container found');
+                            // Log all potential containers for debugging
+                            document.querySelectorAll('.flex-1.overflow-y-auto').forEach((el, i) => {
+                                console.log(`Container ${i}: scrollHeight=${el.scrollHeight}, clientHeight=${el.clientHeight}`);
+                            });
+                            return false;
+                        }
+                    };
+                    
+                    // Multiple attempts with increasing delays
+                    scrollToBottom();
+                    
+                    this.$nextTick(() => {
+                        scrollToBottom();
+                        setTimeout(scrollToBottom, 50);
+                        setTimeout(scrollToBottom, 150);
+                        setTimeout(scrollToBottom, 300);
+                        setTimeout(scrollToBottom, 500);
+                    });
+                },
+                
+                // DIRECT scroll function for button clicks and page refresh
+                scrollToBottomNow() {
+                    // Get all possible scroll containers
+                    const containers = document.querySelectorAll('.flex-1.overflow-y-auto, .overflow-y-auto');
+                    console.log(`🔍 Found ${containers.length} potential scroll containers`);
+                    
+                    let scrolled = false;
+                    containers.forEach((container, index) => {
+                        console.log(`Container ${index}: scrollHeight=${container.scrollHeight}, clientHeight=${container.clientHeight}, scrollTop=${container.scrollTop}`);
+                        
+                        if (container.scrollHeight > container.clientHeight) {
+                            const beforeScroll = container.scrollTop;
+                            container.scrollTop = container.scrollHeight;
+                            console.log(`📜 Container ${index} scrolled: ${beforeScroll} → ${container.scrollTop}`);
+                            scrolled = true;
+                        }
+                    });
+                    
+                    if (!scrolled) {
+                        console.log('⚠️ No containers were scrollable');
+                    }
+                    
+                    return scrolled;
+                },
+                
+                // DEBUG function to test container detection
+                debugScrollInfo() {
+                    console.log('🔍 DEBUG: Checking scroll containers...');
+                    const selectors = [
+                        '.flex-1.overflow-y-auto',
+                        'div.flex-1.overflow-y-auto',
+                        '[class*="flex-1"][class*="overflow-y-auto"]'
+                    ];
+                    
+                    selectors.forEach(selector => {
+                        const elements = document.querySelectorAll(selector);
+                        console.log(`Selector "${selector}" found ${elements.length} elements`);
+                        elements.forEach((el, index) => {
+                            console.log(`  Element ${index}: scrollHeight=${el.scrollHeight}, clientHeight=${el.clientHeight}, scrollTop=${el.scrollTop}`);
+                        });
+                    });
+                    
+                    // Test immediate scroll
+                    const container = document.querySelector('.flex-1.overflow-y-auto');
+                    if (container) {
+                        console.log('✅ Found container, testing immediate scroll...');
+                        container.scrollTop = container.scrollHeight;
+                        setTimeout(() => {
+                            console.log(`After immediate scroll: scrollTop=${container.scrollTop}, scrollHeight=${container.scrollHeight}`);
+                        }, 100);
+                    }
+                },
+                
+                // INSTANT scroll to bottom (for page refresh/initialization)
+                instantScrollToBottom() {
+                    const scrollToBottomNow = () => {
+                        const container = document.querySelector('.flex-1.overflow-y-auto');
+                        if (container && container.scrollHeight > 0) {
+                            container.scrollTop = container.scrollHeight;
+                            console.log(`⚡ Page refresh scroll: ${container.scrollTop}/${container.scrollHeight}`);
+                            return true;
+                        }
+                        return false;
+                    };
+                    
+                    // Multiple aggressive attempts for page refresh
+                    scrollToBottomNow();
+                    this.$nextTick(() => {
+                        scrollToBottomNow();
+                        setTimeout(() => scrollToBottomNow(), 0);
+                        setTimeout(() => scrollToBottomNow(), 10);
+                        setTimeout(() => scrollToBottomNow(), 50);
+                        setTimeout(() => scrollToBottomNow(), 100);
+                        setTimeout(() => scrollToBottomNow(), 200);
+                        setTimeout(() => scrollToBottomNow(), 500);
+                        setTimeout(() => scrollToBottomNow(), 1000);
+                    });
+                },
+                
+                // Scroll to a specific message
+                scrollToMessage(messageId) {
+                    this.$nextTick(() => {
+                        const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+                        if (messageElement) {
+                            messageElement.scrollIntoView({ 
+                                behavior: 'smooth', 
+                                block: 'center' 
+                            });
+                        }
+                    });
+                },
+                
+                autoResize(element) {
+                    element.style.height = 'auto';
+                    element.style.height = Math.min(element.scrollHeight, 120) + 'px';
+                },
+                
+                formatMessage(text) {
+                    if (!text) return '';
+                    
+                    // Start with the raw text
+                    let formatted = text;
+                    
+                    // Handle **bold** text first
+                    formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    
+                    // Handle *italic* text (single asterisks that are not part of bold)
+                    formatted = formatted.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+                    
+                    // Handle ~~strikethrough~~ text
+                    formatted = formatted.replace(/~~(.*?)~~/g, '<del class="text-gray-500">$1</del>');
+                    
+                    // Handle __underline__ text
+                    formatted = formatted.replace(/__(.*?)__/g, '<u>$1</u>');
+                    
+                    // Handle `code` text
+                    formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm font-mono text-red-600 dark:text-red-400">$1</code>');
+                    
+                    // Handle numbered lists (basic)
+                    formatted = formatted.replace(/^\d+\.\s+(.+)$/gm, '<div class="ml-4 mb-1">• $1</div>');
+                    
+                    // Handle bullet points
+                    formatted = formatted.replace(/^[\-\*]\s+(.+)$/gm, '<div class="ml-4 mb-1">• $1</div>');
+                    
+                    // Handle line breaks (do this last)
+                    formatted = formatted.replace(/\n/g, '<br>');
+                    
+                    // Handle links (basic URL detection)
+                    formatted = formatted.replace(
+                        /(https?:\/\/[^\s]+)/g, 
+                        '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">$1</a>'
+                    );
+                    
+                    return formatted;
+                },
+                
+                // Copy message functionality
+                copyMessage(text) {
+                    // Remove HTML tags for clean copying while preserving markdown
+                    let cleanText = text
+                        .replace(/<br>/g, '\n')
+                        .replace(/<strong>(.*?)<\/strong>/g, '**$1**')
+                        .replace(/<em>(.*?)<\/em>/g, '*$1*')
+                        .replace(/<del[^>]*>(.*?)<\/del>/g, '~~$1~~')
+                        .replace(/<u>(.*?)<\/u>/g, '__$1__')
+                        .replace(/<code[^>]*>(.*?)<\/code>/g, '`$1`')
+                        .replace(/<div[^>]*>• (.*?)<\/div>/g, '• $1')
+                        .replace(/<a[^>]*>(.*?)<\/a>/g, '$1')
+                        .replace(/<[^>]*>/g, '');
+                    
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(cleanText).then(() => {
+                            // Show temporary success message
+                            const toast = document.createElement('div');
+                            toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
+                            toast.textContent = 'Message copied!';
+                            document.body.appendChild(toast);
+                            
+                            setTimeout(() => {
+                                toast.remove();
+                            }, 2000);
+                        }).catch(() => {
+                            this.fallbackCopyMessage(cleanText);
+                        });
+                    } else {
+                        this.fallbackCopyMessage(cleanText);
+                    }
+                },
+                
+                fallbackCopyMessage(text) {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        alert('Message copied to clipboard!');
+                    } catch (err) {
+                        alert('Could not copy message. Please copy manually.');
+                    }
+                    
+                    document.body.removeChild(textArea);
+                },
+                
+                // Authentication
+                async login() {
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(this.loginForm)
+                        });
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            this.user.loggedIn = true;
+                            this.user.username = this.loginForm.username;
+                            this.user.email = data.email || '';
+                            this.user.joined = data.joined || new Date().toISOString().split('T')[0];
+                            
+                            // Save user session to localStorage for persistence
+                            this.saveUserSession();
+                            
+                            // Load this user's specific chat history
+                            this.loadChatSessions();
+                            
+                            this.showLoginModal = false;
+                            this.loginForm = { username: '', password: '' };
+                            
+                            // Show success message without blocking
+                            const toast = document.createElement('div');
+                            toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
+                            toast.textContent = 'Login successful! 🎉';
+                            document.body.appendChild(toast);
+                            setTimeout(() => toast.remove(), 3000);
+                        } else {
+                            alert(data.message || 'Login failed');
+                        }
+                    } catch (error) {
+                        alert('Login error: ' + error.message);
+                    }
+                },
+                
+                async register() {
+                    try {
+                        const response = await fetch('/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(this.registerForm)
+                        });
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            this.user.loggedIn = true;
+                            this.user.username = this.registerForm.username;
+                            this.user.email = this.registerForm.email;
+                            this.user.joined = new Date().toISOString().split('T')[0];
+                            
+                            // Save user session to localStorage for persistence
+                            this.saveUserSession();
+                            
+                            // New user starts with empty chat history
+                            this.chatSessions = [];
+                            
+                            this.showRegisterModal = false;
+                            this.registerForm = { username: '', email: '', password: '' };
+                            
+                            // Show success message without blocking
+                            const toast = document.createElement('div');
+                            toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
+                            toast.textContent = 'Account created successfully! Welcome to Sahara 🌸';
+                            document.body.appendChild(toast);
+                            setTimeout(() => toast.remove(), 3000);
+                        } else {
+                            alert(data.message || 'Registration failed');
+                        }
+                    } catch (error) {
+                        alert('Registration error: ' + error.message);
+                    }
+                },
+                
+                async logout() {
+                    try {
+                        await fetch('/logout');
+                        // Save current user's chats before logging out
+                        if (this.user.loggedIn && this.user.username) {
+                            this.saveUserChats();
+                        }
+                        
+                        // Clear the saved session
+                        this.clearUserSession();
+                        
+                        this.user = { loggedIn: false, username: '', email: '', joined: '' };
+                        // Clear current session but don't delete saved user chats
+                        this.chatSessions = [];
+                        this.newChat(); // Start fresh chat
+                        
+                        // Show success message without blocking
+                        const toast = document.createElement('div');
+                        toast.className = 'fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300';
+                        toast.textContent = 'Logged out successfully';
+                        document.body.appendChild(toast);
+                        setTimeout(() => toast.remove(), 3000);
+                    } catch (error) {
+                        alert('Logout error: ' + error.message);
+                    }
+                },
+                
+                // Session Persistence Functions
+                saveUserSession() {
+                    if (this.user.loggedIn) {
+                        localStorage.setItem('sahara_user_session', JSON.stringify({
+                            loggedIn: this.user.loggedIn,
+                            username: this.user.username,
+                            email: this.user.email,
+                            joined: this.user.joined,
+                            loginTime: Date.now(),
+                            currentChatId: this.currentChatId,  // Save current chat
+                            sessionId: this.sessionId           // Save session ID
+                        }));
+                    }
+                },
+                
+                // Save current chat state (call this periodically)
+                saveCurrentChatState() {
+                    if (this.user.loggedIn) {
+                        const currentSession = localStorage.getItem('sahara_user_session');
+                        if (currentSession) {
+                            const sessionData = JSON.parse(currentSession);
+                            sessionData.currentChatId = this.currentChatId;
+                            sessionData.sessionId = this.sessionId;
+                            sessionData.lastMessages = this.messages.slice(-5); // Save last 5 messages
+                            localStorage.setItem('sahara_user_session', JSON.stringify(sessionData));
+                        }
+                    }
+                },
+                
+                loadUserSession() {
+                    try {
+                        const savedSession = localStorage.getItem('sahara_user_session');
+                        if (savedSession) {
+                            const sessionData = JSON.parse(savedSession);
+                            // Check if session is not too old (30 days)
+                            const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+                            
+                            if (sessionData.loginTime && sessionData.loginTime > thirtyDaysAgo) {
+                                this.user = {
+                                    loggedIn: sessionData.loggedIn,
+                                    username: sessionData.username,
+                                    email: sessionData.email,
+                                    joined: sessionData.joined
+                                };
+                                
+                                // Restore current chat state if it exists
+                                if (sessionData.currentChatId) {
+                                    this.currentChatId = sessionData.currentChatId;
+                                }
+                                if (sessionData.sessionId) {
+                                    this.sessionId = sessionData.sessionId;
+                                }
+                                
+                                console.log(`✅ Restored session for user: ${this.user.username}`);
+                                
+                                // Load chat sessions after restoring user
+                                this.$nextTick(() => {
+                                    this.loadChatSessions();
+                                    // Restore the specific chat if it exists
+                                    if (this.currentChatId) {
+                                        const existingChat = this.chatSessions.find(chat => chat.id === this.currentChatId);
+                                        if (existingChat) {
+                                            this.selectChat(existingChat);
+                                            // Auto-scroll to bottom after restoring chat (AGGRESSIVE)
+                                            this.$nextTick(() => {
+                                                // Use the direct scroll method for page refresh
+                                                const scrollNow = () => this.scrollToBottomNow();
+                                                
+                                                // Immediate and multiple delayed attempts
+                                                scrollNow();
+                                                setTimeout(scrollNow, 100);
+                                                setTimeout(scrollNow, 300);
+                                                setTimeout(scrollNow, 600);
+                                                setTimeout(scrollNow, 1000);
+                                                setTimeout(scrollNow, 1500);
+                                                setTimeout(scrollNow, 2000);
+                                            });
+                                        }
+                                    }
+                                });
+                            } else {
+                                // Session expired, clean up
+                                localStorage.removeItem('sahara_user_session');
+                                console.log('⚠️ Session expired, please log in again');
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error loading user session:', error);
+                        localStorage.removeItem('sahara_user_session');
+                    }
+                },
+                
+                // Initialize mood-aware chat context
+                initializeMoodContext() {
+                    console.log('🧠 Initializing mood-aware chat context...');
+                    
+                    // Check if we have server-provided mood context
+                    if (this.moodContext && this.moodContext.latest_mood) {
+                        console.log('✅ Found recent mood data:', this.moodContext);
+                        
+                        // Add a contextual greeting message if it's the first chat
+                        if (this.messages.length === 0) {
+                            const moodGreeting = this.generateMoodAwareGreeting();
+                            this.messages.push({
+                                id: Date.now(),
+                                sender: 'assistant',
+                                text: moodGreeting,
+                                timestamp: new Date().toISOString(),
+                                mood_context: true
+                            });
+                        }
+                    } else if (this.user.isAnonymous || !this.user.loggedIn) {
+                        console.log('👤 Anonymous user detected, checking for local mood data...');
+                        
+                        // Check for anonymous mood data in localStorage
+                        const anonymousMoods = this.getAnonymousMoodData();
+                        if (anonymousMoods && anonymousMoods.length > 0) {
+                            console.log('✅ Found anonymous mood data:', anonymousMoods);
+                            
+                            // Store anonymous mood context for chat
+                            this.moodContext = {
+                                latest_mood: anonymousMoods[0].mood,
+                                intensity: anonymousMoods[0].intensity,
+                                notes: anonymousMoods[0].notes,
+                                is_anonymous: true,
+                                recent_entries_count: anonymousMoods.length
+                            };
+                            
+                            if (this.messages.length === 0) {
+                                const moodGreeting = this.generateMoodAwareGreeting();
+                                this.messages.push({
+                                    id: Date.now(),
+                                    sender: 'assistant',
+                                    text: moodGreeting,
+                                    timestamp: new Date().toISOString(),
+                                    mood_context: true
+                                });
+                            }
+                        }
+                    }
+                },
+                
+                // Generate mood-aware greeting based on current mood context
+                generateMoodAwareGreeting() {
+                    if (!this.moodContext || !this.moodContext.latest_mood) {
+                        return "Hello! I'm Sahara, your AI wellness companion. How are you feeling today?";
+                    }
+                    
+                    const mood = this.moodContext.latest_mood;
+                    const intensity = this.moodContext.intensity || 5;
+                    const userName = this.user.loggedIn ? this.user.username : '';
+                    const greeting = userName ? `Hello ${userName}! ` : 'Hello! ';
+                    
+                    // Generate mood-specific greetings
+                    const moodGreetings = {
+                        'Happy': [
+                            `${greeting}I can see you're feeling happy! That's wonderful. What's been bringing you joy today?`,
+                            `${greeting}Your positive mood is great to see! How can I help you maintain or build on this happiness?`
+                        ],
+                        'Sad': [
+                            `${greeting}I notice you've been feeling sad recently. I'm here to listen and support you. Would you like to talk about what's on your mind?`,
+                            `${greeting}It's okay to feel sad sometimes. I'm here with you. What would help you feel supported right now?`
+                        ],
+                        'Anxious': [
+                            `${greeting}I see you've been experiencing some anxiety. That must feel overwhelming. Let's work through this together - what's been on your mind?`,
+                            `${greeting}Anxiety can be really challenging. I'm here to help you process these feelings. Want to share what's been worrying you?`
+                        ],
+                        'Angry': [
+                            `${greeting}I can see you've been feeling frustrated. Those feelings are valid. Would you like to talk through what's been bothering you?`,
+                            `${greeting}Anger often tells us something important. I'm here to listen without judgment. What's been triggering these feelings?`
+                        ],
+                        'Tired': [
+                            `${greeting}I notice you've been feeling exhausted. That can be really draining. How can I support you in finding some relief or rest?`,
+                            `${greeting}Being tired affects everything. Let's talk about what's been wearing you down and how we might help you recharge.`
+                        ]
+                    };
+                    
+                    const moodMessages = moodGreetings[mood] || [
+                        `${greeting}I see you've been tracking your mood as "${mood}". I'm here to support you wherever you are emotionally. How are you feeling right now?`
+                    ];
+                    
+                    return moodMessages[Math.floor(Math.random() * moodMessages.length)];
+                },
+                
+                // Get anonymous mood data from localStorage
+                getAnonymousMoodData() {
+                    try {
+                        const sessionId = this.user.sessionId || localStorage.getItem('sahara_session_id');
+                        if (sessionId) {
+                            const moodKey = `sahara_moods_${sessionId}`;
+                            const moodData = localStorage.getItem(moodKey);
+                            if (moodData) {
+                                const moods = JSON.parse(moodData);
+                                return moods.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error loading anonymous mood data:', error);
+                    }
+                    return null;
+                },
+                
+                // Analyze mood trend from recent data
+                analyzeMoodTrend() {
+                    if (!this.moodContext || !this.moodContext.mood_trend) {
+                        return 'stable';
+                    }
+                    
+                    const recentMoods = this.moodContext.mood_trend;
+                    if (recentMoods.length < 2) {
+                        return 'stable';
+                    }
+                    
+                    // Simple trend analysis based on intensity changes
+                    const recent = recentMoods[0];
+                    const previous = recentMoods[1];
+                    
+                    if (recent.intensity > previous.intensity + 1) {
+                        return 'improving';
+                    } else if (recent.intensity < previous.intensity - 1) {
+                        return 'declining';
+                    } else {
+                        return 'stable';
+                    }
+                },
+                
+                clearUserSession() {
+                    localStorage.removeItem('sahara_user_session');
+                },
+                
+                // Clear any existing guest sessions (call this on app init)
+                clearGuestSessions() {
+                    // Only clear if not logged in and no user data exists
+                    if (!this.user.loggedIn) {
+                        // Clear the old non-user-specific key (legacy cleanup)
+                        localStorage.removeItem('sahara_chat_sessions');
+                        this.chatSessions = [];
+                    }
+                },
+                
+                // Export functionality
+                exportChats() {
+                    const dataStr = JSON.stringify({
+                        user: this.user.username,
+                        exportDate: new Date().toISOString(),
+                        conversations: this.chatSessions
+                    }, null, 2);
+                    
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `sahara-chats-${this.user.username || 'export'}-${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

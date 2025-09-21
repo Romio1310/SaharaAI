@@ -1,0 +1,94 @@
+{
+  "crisis_support": {
+    "title": "Crisis Support",
+    "description": "Immediate help for mental health emergencies",
+    "items": [
+      {
+        "name": "Aasra Suicide Prevention",
+        "contact": "91-9820466726",
+        "hours": "24/7",
+        "description": "Mumbai-based crisis helpline"
+      },
+      {
+        "name": "Sneha India",
+        "contact": "91-44-24640050",
+        "hours": "24/7", 
+        "description": "Chennai-based emotional support"
+      },
+      {
+        "name": "Vandrevala Foundation",
+        "contact": "1860-2662-345",
+        "hours": "24/7",
+        "description": "Free counseling across India"
+      }
+    ]
+  },
+  "breathing_exercises": {
+    "title": "Breathing Exercises",
+    "description": "Simple techniques to manage anxiety and stress",
+    "items": [
+      {
+        "name": "4-7-8 Breathing",
+        "steps": ["Inhale for 4 seconds", "Hold for 7 seconds", "Exhale for 8 seconds", "Repeat 4 times"]
+      },
+      {
+        "name": "Box Breathing",
+        "steps": ["Inhale 4 seconds", "Hold 4 seconds", "Exhale 4 seconds", "Hold 4 seconds"]
+      }
+    ]
+  },
+  "study_techniques": {
+    "title": "Effective Study Methods",
+    "description": "Proven techniques for academic success with less stress",
+    "items": [
+      {
+        "name": "Pomodoro Technique",
+        "description": "25 minutes focused study + 5 minutes break"
+      },
+      {
+        "name": "Active Recall",
+        "description": "Test yourself instead of just re-reading"
+      },
+      {
+        "name": "Spaced Repetition",
+        "description": "Review material at increasing intervals"
+      }
+    ]
+  },
+  "communication_tips": {
+    "title": "Family Communication",
+    "description": "How to talk to parents about your feelings and career choices",
+    "items": [
+      {
+        "tip": "Choose the right time and place for serious conversations"
+      },
+      {
+        "tip": "Use 'I feel' statements instead of 'You always' statements"
+      },
+      {
+        "tip": "Show respect for their concerns while expressing your own"
+      },
+      {
+        "tip": "Prepare examples of successful people in your field of interest"
+      }
+    ]
+  },
+  "professional_help": {
+    "title": "Professional Mental Health Support",
+    "description": "When and how to seek professional help",
+    "items": [
+      {
+        "name": "Therapy Options",
+        "description": "Individual therapy, group therapy, family therapy"
+      },
+      {
+        "name": "Online Counseling",
+        "description": "Platforms like BetterHelp, Practo, 1to1help.net"
+      },
+      {
+        "name": "College Counselors",
+        "description": "Most colleges have free counseling services"
+      }
+    ]
+  }
+}
