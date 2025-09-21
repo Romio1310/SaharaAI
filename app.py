@@ -17,8 +17,17 @@ import bcrypt
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'sahara-wellness-secret-key-' + str(uuid.uuid4())
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sahara_wellness.db'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sahara-wellness-secret-key-' + str(uuid.uuid4()))
+
+# Database configuration - use environment variable for production or SQLite for local
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    # Production: Use provided database URL (e.g., PostgreSQL)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Development: Use SQLite
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sahara_wellness.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app)
@@ -1468,7 +1477,12 @@ def service_worker():
     """Serve service worker"""
     return send_from_directory('static', 'sw.js')
 
-if __name__ == '__main__':
+# Initialize database tables
+try:
     with app.app_context():
         db.create_all()
+except Exception as e:
+    print(f"Database initialization error: {e}")
+
+if __name__ == '__main__':
     app.run(debug=True, port=5001, host='127.0.0.1')
