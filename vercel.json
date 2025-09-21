@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "sahara-wellness-ai",
   "builds": [
     {
       "src": "api/index.py",
